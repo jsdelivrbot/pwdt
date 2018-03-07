@@ -10,11 +10,11 @@
 
 <div class="jumbotron text-center">
   <div class="container">
-    <a href="/" class="lang-logo">
+<!--     <a href="/" class="lang-logo">
       <img src="/lang-logo.png">
-    </a>
+    </a> -->
     <h1>Plasma Workflow Decision Tree</h1>
-    <p>This application recommends an analysis technique based on a protein of interest and degree of detection.</p>
+    <p>This application recommends an analysis technique based on the protein of interest and degree of detection.</p>
     <a type="button" class="btn btn-lg btn-default" href="https://devcenter.heroku.com/articles/getting-started-with-nodejs"><span class="glyphicon glyphicon-flash"></span> Getting Started with Node</a>
     <a type="button" class="btn btn-lg btn-primary" href="https://github.com/heroku/node-js-getting-started"><span class="glyphicon glyphicon-download"></span> Source on GitHub</a>
   </div>
@@ -26,6 +26,22 @@
   <hr>
   <div class="row">
     <div class="col-md-6">
+
+      <div class="form-group">
+        <!-- <label for="exampleTextarea">Example textarea</label> -->
+        <textarea class="form-control" id="exampleTextarea" rows="6" placeholder="Enter proteins of interst"></textarea>
+      </div>
+
+      <button class="btn btn-danger" type="button">Submit</button>
+
+<!--       <div class="form-horizontal">
+        <div class="form-group">
+          <div class="col-md-6">
+            <textarea class="form-control" rows="6" placeholder="What's up?" required></textarea>
+          </div>
+        </div>
+      </div> -->
+
       <h3><span class="glyphicon glyphicon-info-sign"></span> How this sample app works</h3>
       <ul>
         <li>This app was deployed to Heroku, either using Git or by using <a href="https://github.com/heroku/node-js-getting-started">Heroku Button</a> on the repository.</li>
@@ -36,6 +52,7 @@
       </ul>
     </div>
     <div class="col-md-6">
+
       <h3><span class="glyphicon glyphicon-link"></span> Next Steps</h3>
       <ul>
         <li>If you are following the <a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs">Getting Started</a> guide, then please head back to the tutorial and follow the next steps!</li>
@@ -56,9 +73,12 @@
       </ul>
     </div>
   </div> <!-- row -->
-   <div class="alert alert-info text-center" role="alert">
+<!--    <div class="alert alert-info text-center" role="alert">
     Please do work through the Getting Started guide, even if you do know how to build such an application.  The guide covers the basics of working with Heroku, and will familiarize you with all the concepts you need in order to build and deploy your own apps.
-  </div>
+  </div> -->
+<br>
+<br>
+<br>
 </div>
 
 
