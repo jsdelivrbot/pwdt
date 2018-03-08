@@ -32,5 +32,8 @@ app.get('/db', function (request, response) {
   });
 });
 
+function GetDB() {
+	
+}
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`)) 
