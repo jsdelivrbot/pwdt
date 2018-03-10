@@ -1,13 +1,18 @@
 const express = require('express');
 const path = require('path');
-var pg = require('pg');
+const pg = require('pg');
+const bodyParser = require('body-parser');
+const routes = require('./server/routes/index');
 
 // set port
 const PORT = process.env.PORT || 5000
+const connectionString = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/todo';
 
-var app = express();
+const app = express();
 
 app.use(express.static(path.join(__dirname, '/public')))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.set('views', path.join(__dirname, '/views'))
 app.set('view engine', 'ejs')
 app.get('/', function (req, res) {
@@ -15,25 +20,33 @@ app.get('/', function (req, res) {
   res.render('pages/index')
 }); //route
 
-app.get('/db', function (request, response) {
-  console.log(process.env.DATABASE_URL);
-  console.log("hello again");
-  pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-  	if (err) {
-  		console.log("encountered error");
-  	}
-    client.query('SELECT * FROM test_table;', function(err, result) {
-      done();
-      if (err)
-       { console.error(err); response.send("Error " + err); }
-      else
-       { response.render('pages/db', {results: result.rows} ); }
-    });
-  });
-});
+app.use('/', routes);
 
-function GetDB() {
+const client = new pg.Client(connectionString);
+
+
+// app.get('/db', function (request, response) {
+//   console.log(connectionString);
+//   console.log("hello again");
+//   pg.connect(connectionString, function(err, client, done) {
+//   	if (err) {
+//   		console.log("encountered error");
+//   	}
+//     client.query('SELECT * FROM test_table;', function(err, result) {
+//       done();
+//       if (err)
+//        { console.error(err); response.send("Error " + err); }
+//       else
+//        { response.render('pages/db', {results: result.rows} ); }
+//     });
+//   });
+// });
+
+// function GetDB() {
 	
-}
+// }
+
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`)) 
+
+module.exports = app;
