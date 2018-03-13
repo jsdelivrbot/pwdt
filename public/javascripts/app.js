@@ -28,10 +28,17 @@ angular.module('nodeTodo', [])
   // Query todo
   $scope.queryTodo = () => {
     var proteinList = $scope.proteinData.text;
-    proteinList = proteinList.replace("\n", "5");
-    $http.get('/api/v1/query/' + $scope.proteinData)
+    proteinList = proteinList.replace(new RegExp('\n', 'g'), ",");
+    $http.get('/api/v1/except/' + proteinList)
     .success((data) => {
-      // $scope.todoData = data;
+      $scope.exceptData = data;
+      console.log(data);
+    })
+    .error((error) => {
+      console.log('Error: ' + error);
+    });
+    $http.get('/api/v1/query/' + proteinList)
+    .success((data) => {
       $scope.queryData = data;
       console.log(data);
     })

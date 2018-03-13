@@ -26,30 +26,41 @@
   <hr> -->
   <div class="row">
     <div class="col-md-6">
+      <div class="todo-form">
+        <form>
 
-      <div class="form-group">
-        <!-- <label for="exampleTextarea">Example textarea</label> 
-        class="form-control" id="exampleTextarea" rows="6" placeholder="Enter proteins of interst..."-->
-        <textarea class="form-control" rows="6" placeholder="Enter proteins of interst..." ng-model="proteinData.text"></textarea>
+          <div class="form-group">
+            <!-- <label for="exampleTextarea">Example textarea</label> 
+            class="form-control" id="exampleTextarea" rows="6" placeholder="Enter proteins of interst..."-->
+            <textarea class="form-control" rows="6" placeholder="Enter proteins of interst..." ng-model="proteinData.text"></textarea>
+          </div>
 
-        <h1>{{ proteinData }}</h1>
-<!--        <script>var id = {{ proteinData.text }}.replace(/\n/g, "/"); -->
-        <p>hi</p>
-        <p id="arrayOfLines"></p>
-        <script>var textArea = document.getElementById("proteinData");
-        var arrayOfLines = textArea.value.split("\n");
-        console.log("hello");
-        console.log(arrayOfLines);
-        </script>
+<!--         <h1>{{ proteinData }}</h1> -->
 
-<!--         <button class="btn btn-danger" type="submit" ng-click="queryTodo(proteinData.text)">Submit</button> -->
-        <button class="btn btn-danger" type="submit" ng-click="queryTodo()">Submit</button>
+          <button class="btn btn-danger" type="submit" ng-click="queryTodo()">Submit</button>
+        </form>
       </div>
+      <br>
       <div class="todo-list">
-        <ul ng-repeat="query in queryData">
-          <li><h3>&nbsp;{{ query.text }}</h3></li><hr>
-        </ul>
+        <span ng-show="exceptData.length > 0">Proteins not in database: </span>
+        <span ng-show="exceptData.length > 0" ng-repeat="except in exceptData">&nbsp;{{ except.id }}{{$last ? '' : ', '}}</span>
       </div>
+      <br>
+      <table class="table table-striped">
+        <thread>
+          <tr>
+            <th scope="col">Protein Name</th>
+            <th scope="col">Swiss Prot ID</th>
+          </tr>
+        </thread>
+        <tbody>
+          <tr ng-repeat="query in queryData">
+            <!-- <th scope="row">0</th> -->
+            <td>&nbsp;{{ query.protein_name }}</td>
+            <td>&nbsp;{{ query.swiss_prot_id }}</td>
+          </tr>
+        </tbody>
+      </table>
 
       <h3><span class="glyphicon glyphicon-info-sign"></span> How this sample app works</h3>
       <ul>
@@ -70,11 +81,26 @@
         </form>
       </div>
       <br>
-      <div class="todo-list">
+<!--       <div class="todo-list">
         <ul ng-repeat="todo in todoData">
-          <li><h3><input class="lead" type="checkbox" ng-click="deleteTodo(todo.id)">&nbsp;{{ todo.text }}</h3></li><hr>
+          <li><h3><input class="lead" type="checkbox" ng-click="deleteTodo(todo.id)">&nbsp;{{ todo.protein_name }}</h3></li><hr>
         </ul>
-      </div>
+      </div> -->
+      <table class="table table-striped">
+        <thread>
+          <tr>
+            <th scope="col">Protein Name</th>
+            <th scope="col">Swiss Prot ID</th>
+          </tr>
+        </thread>
+        <tbody>
+          <tr ng-repeat="todo in todoData">
+            <!-- <th scope="row">0</th> -->
+            <td>&nbsp;{{ todo.protein_name }}</td>
+            <td>&nbsp;{{ todo.swiss_prot_id }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div> <!-- row -->
 <!--    <div class="alert alert-info text-center" role="alert">
