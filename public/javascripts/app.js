@@ -4,6 +4,8 @@ angular.module('nodeTodo', [])
   $scope.todoData = {};
   $scope.proteinData = {};
   $scope.queryData = {};
+  $scope.specificity = {};
+  // $scope.specificity.text = Specificity;
   // Get all todos
   $http.get('/api/v1/todos')
   .success((data) => {
@@ -56,5 +58,8 @@ angular.module('nodeTodo', [])
     .error((data) => {
       console.log('Error: ' + data);
     });
+  };
+  $scope.updateSpecificity = (specificity) => {
+    $scope.specificity.text = specificity;
   };
 });

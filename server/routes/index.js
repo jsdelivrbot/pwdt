@@ -34,16 +34,13 @@ router.get('/api/v1/todos', (req, res, next) => {
 });
 
 //Ids not in database
-router.get('/api/v1/except/:todo_id', (req, res, next) => {
+router.get('/api/v1/except/:swiss_prot_id', (req, res, next) => {
   console.log("we are querying ids not in table here")
   const results = [];
   // Grab data from the URL parameters
-  var id = req.params.todo_id;
-  // id = id.split(',');
+  var id = req.params.swiss_prot_id;
   console.log(req.params);
   console.log(id);
-  // Grab data from http request
-  //const data = {text: req.body.text, complete: false};
   
   // Get a Postgres client from the connection pool
   pg.connect(connectionString, (err, client, done) => {
@@ -54,16 +51,12 @@ router.get('/api/v1/except/:todo_id', (req, res, next) => {
       return res.status(500).json({success: false, data: err});
     }
     // SQL Query > Select Data
-
-    // const query = client.query('SELECT * FROM items WHERE id IN (unnest($1::int[]))', [id.split(',')]);
-    const query = client.query('SELECT * FROM unnest($1::int[]) id EXCEPT SELECT id FROM pwdt ORDER BY id ASC', [id.split(',')]);
-// Stream results back one row at a time
+    const query = client.query('SELECT * FROM unnest($1::text[]) swiss_prot_id EXCEPT SELECT swiss_prot_id FROM pwdt ORDER BY swiss_prot_id ASC', [id.split(',')]);
+    // Stream results back one row at a time
     query.on('row', (row) => {
       results.push(row);
     });
 
-    // var arr_len = results.length;
-    // console.log(arr_len);
     // After all data is returned, close connection and return results
     query.on('end', () => {
       done();
@@ -74,16 +67,13 @@ router.get('/api/v1/except/:todo_id', (req, res, next) => {
 
 
 //Query id
-router.get('/api/v1/query/:todo_id', (req, res, next) => {
+router.get('/api/v1/query/:id', (req, res, next) => {
   console.log("we are querying here")
   const results = [];
   // Grab data from the URL parameters
-  var id = req.params.todo_id;
-  // id = id.split(',');
+  var id = req.params.id;
   console.log(req.params);
   console.log(id);
-  // Grab data from http request
-  //const data = {text: req.body.text, complete: false};
   
   // Get a Postgres client from the connection pool
   pg.connect(connectionString, (err, client, done) => {
@@ -94,16 +84,12 @@ router.get('/api/v1/query/:todo_id', (req, res, next) => {
       return res.status(500).json({success: false, data: err});
     }
     // SQL Query > Select Data
-
-    // const query = client.query('SELECT * FROM items WHERE id IN (unnest($1::int[]))', [id.split(',')]);
-    const query = client.query('SELECT * FROM pwdt WHERE id = ANY($1::int[])', [id.split(',')]);
-// Stream results back one row at a time
+    const query = client.query('SELECT * FROM pwdt WHERE swiss_prot_id = ANY($1::text[]) OR gene_name = ANY($1::text[])', [id.split(',')]);
+    // Stream results back one row at a time
     query.on('row', (row) => {
       results.push(row);
     });
 
-    // var arr_len = results.length;
-    // console.log(arr_len);
     // After all data is returned, close connection and return results
     query.on('end', () => {
       done();
@@ -111,8 +97,6 @@ router.get('/api/v1/query/:todo_id', (req, res, next) => {
     });
   });
 });
-
-
 
 
 // create todo
