@@ -1,7 +1,21 @@
+.jumbotron h1 {
+  font-size: 55px;
+}
+.jumbotron h3 {
+  font-size: 19px;
+}
+label {
+  font-weight: 600;
+  font-size: 15px;
+}
+.container {
+  width: 95%;
+}
 .jumbotron {
   background: #532F8C;
   color: white;
-  padding-bottom: 50px; }
+  padding-top: 10px;
+  padding-bottom: 25px; }
 .jumbotron .btn-primary {
   background: #845ac7;
   border-color: #845ac7; }
@@ -25,3 +39,15 @@
 .jumbotron .lang-logo img {
   max-width: 100%; }
 textarea { resize:vertical; }
+.axis path, .axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+.axis path{
+    fill: none;
+    stroke: none;
+}
+.bar {
+    fill: steelblue;
+}

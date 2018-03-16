@@ -24,29 +24,6 @@ app.use('/', routes);
 
 const client = new pg.Client(connectionString);
 
-
-// app.get('/db', function (request, response) {
-//   console.log(connectionString);
-//   console.log("hello again");
-//   pg.connect(connectionString, function(err, client, done) {
-//   	if (err) {
-//   		console.log("encountered error");
-//   	}
-//     client.query('SELECT * FROM test_table;', function(err, result) {
-//       done();
-//       if (err)
-//        { console.error(err); response.send("Error " + err); }
-//       else
-//        { response.render('pages/db', {results: result.rows} ); }
-//     });
-//   });
-// });
-
-// function GetDB() {
-	
-// }
-
-
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`)) 
 
 module.exports = app;

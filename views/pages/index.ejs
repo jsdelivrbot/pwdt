@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="nodeTodo">
+<html ng-app="pwdt">
 <head>
   <% include ../partials/header.ejs %>
 </head>
@@ -10,56 +10,57 @@
 
 <div class="jumbotron text-center">
   <div class="container">
-<!--     <a href="/" class="lang-logo">
-      <img src="/lang-logo.png">
-    </a> -->
     <h1>Plasma Workflow Decision Tree</h1>
-    <p>This application recommends an analysis technique based on the protein of interest and degree of detection.</p>
-    <a type="button" class="btn btn-lg btn-default" href="https://devcenter.heroku.com/articles/getting-started-with-nodejs"><span class="glyphicon glyphicon-flash"></span> Getting Started with Node</a>
-    <a type="button" class="btn btn-lg btn-primary" href="https://github.com/heroku/node-js-getting-started"><span class="glyphicon glyphicon-download"></span> Source on GitHub</a>
+    <h3>This application recommends an analysis technique based on the protein of interest and degree of detection.</h3>
   </div>
 </div>
 <div class="container">
-<!--   <div class="alert alert-info text-center" role="alert">
-    To deploy your own copy, and learn the fundamentals of the Heroku platform, head over to the <a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs" class="alert-link">Getting Started with Node on Heroku</a> tutorial.
-  </div>
-  <hr> -->
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-5">
       <div class="todo-form">
         <form>
-
+          <!-- <div class="col-md-8"> -->
           <div class="form-group">
-            <!-- <label for="exampleTextarea">Example textarea</label> 
-            class="form-control" id="exampleTextarea" rows="6" placeholder="Enter proteins of interst..."-->
-            <textarea class="form-control" rows="6" placeholder="Enter proteins of interst..." ng-model="proteinData.text"></textarea>
+            <label>Enter proteins of interest: (eg. Q53GG5, GSTP1)</label>
+            <textarea class="form-control" rows="6" placeholder="Enter swiss prot id or gene name..." ng-model="proteinData.text"></textarea>
           </div>
-
-<!--         <h1>{{ proteinData }}</h1> -->
-          <div class="btn-group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-               Specificity <span class="caret"></span>
-            </button>
-            {{ specificity.text || 'Specificity ' }}
-            <ul class="dropdown-menu">
-              <li><a ng-click="updateSpecificity('Identified')">Identified</a></li>
-              <li><a ng-click="updateSpecificity('Quantified')">Quantified</a></li>
-              <li><a ng-click="updateSpecificity('Broader Linear Range')">Broader Linear Range</a></li>
-            </ul>
+        <!--   </div>
+          <div class="col-md-4"> -->
+          <div class="form-check">
+            <label>Select specificity:</label>
+            <br>
+            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" ng-model="specificity.text" ng-init="specificity.text='Identified'" value="Identified" checked>
+            <span class="form-check-label">
+              Identified
+            </span>
           </div>
-          <br>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" ng-model="specificity.text" value="Quantified">
+            <span class="form-check-label">
+              Quantified
+            </span>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" ng-model="specificity.text" value="Linear Range">
+            <span class="form-check-label">
+              Linear Range
+            </span>
+          </div>
+          <!-- </div> -->
           <br>
           <button class="btn btn-danger" type="submit" ng-click="queryTodo()">Submit</button>
         </form>
       </div>
-      <!-- Single button -->
-      
       <br>
       <div class="todo-list">
-        <span ng-show="exceptData.length > 0">Proteins not in database: </span>
-        <span ng-show="exceptData.length > 0" ng-repeat="except in exceptData">&nbsp;{{ except.swiss_prot_id }}{{$last ? '' : ','}}</span>
+        <span class="ng-cloak" ng-show="exceptData.length > 0">Proteins not in database: </span>
+        <span class="ng-cloak" ng-show="exceptData.length > 0" ng-repeat="except in exceptData">&nbsp;{{ except.unnest }}{{$last ? '' : ','}}</span>
       </div>
       <br>
+      <div class="container" style="border:1px solid #cecece">
+        <chart-form></chart-form>
+        <bar-chart height="options.height" data="data" hovered="hovered(args)"></bar-chart>
+      </div>
       <table class="table table-bordered table-striped">
         <thread>
           <tr>
@@ -67,88 +68,72 @@
             <th scope="col">Gene Name</th>
             <th scope="col">Entry Name</th>
             <!-- <th scope="col">Protein Name</th> -->
-            <th scope="col" ng-show="specificity.text == 'Identified'">Identified</th>
-            <th scope="col" ng-show="specificity.text == 'Identified'">Recommendation</th>
-            <th scope="col" ng-show="specificity.text == 'Quantified'">Quantified</th>
-            <th scope="col" ng-show="specificity.text == 'Quantified'">Recommendation</th>
-            <th scope="col" ng-show="specificity.text == 'Broader Linear Range'">Broader Linear Range</th>
-            <th scope="col" ng-show="specificity.text == 'Broader Linear Range'">Recommendation</th>
+            <th scope="col">Identified</th>
+            <th scope="col">Quantified</th>
+            <th scope="col">Good Linearity</th>
+            <th scope="col">Broader Linear Range</th>
           </tr>
         </thread>
         <tbody>
-          <tr ng-repeat="query in queryData">
-            <!-- <th scope="row">0</th> -->
-            <td>&nbsp;{{ query.swiss_prot_id }}</td>
-            <td>&nbsp;{{ query.gene_name }}</td>
-            <td>&nbsp;{{ query.entry_name }}</td>
-            <!-- <td>&nbsp;{{ query.protein_name }}</td> -->
-            <td ng-show="specificity.text == 'Identified'">&nbsp;{{ query.identified }}</td>
-            <td ng-show="specificity.text == 'Identified'">&nbsp;{{ query.identified=='Both'? 'Undepleted' : query.identified }}</td>
-            <td ng-show="specificity.text == 'Quantified'">&nbsp;{{ query.quantified }}</td>
-            <td ng-show="specificity.text == 'Quantified'">&nbsp;{{ query.quantified=='Both'? 'Undepleted' : query.quantified }}</td>
-            <td ng-show="specificity.text == 'Broader Linear Range'">&nbsp;{{ query.broader_linear_range }}</td>
-            <td ng-show="specificity.text == 'Broader Linear Range'">&nbsp;{{ query.broader_linear_range=='Both'? 'Undepleted' : query.broader_linear_range!="#N/A"? query.broader_linear_range : query.quantified=='Both'? 'quantified: Undepleted' : query.quantified!="#N/A"? 'quantified: ' + query.quantified : query.identified=='Both'? 'Undepleted' : 'identified: ' + query.identified }}</td>
+          <tr ng-repeat="todo in todoData">
+            <td class="ng-cloak">&nbsp;{{ todo.swiss_prot_id }}</td>
+            <td class="ng-cloak">&nbsp;{{ todo.gene_name }}</td>
+            <td class="ng-cloak">&nbsp;{{ todo.entry_name }}</td>
+            <!-- <td>&nbsp;{{ todo.protein_name }}</td> -->
+            <td class="ng-cloak">&nbsp;{{ todo.identified }}</td>
+            <td class="ng-cloak">&nbsp;{{ todo.quantified }}</td>
+            <td class="ng-cloak">&nbsp;{{ todo.good_linearity }}</td>
+            <td class="ng-cloak">&nbsp;{{ todo.broader_linear_range }}</td>
           </tr>
         </tbody>
       </table>
-
-      <h3><span class="glyphicon glyphicon-info-sign"></span> How this sample app works</h3>
-      <ul>
-        <li>This app was deployed to Heroku, either using Git or by using <a href="https://github.com/heroku/node-js-getting-started">Heroku Button</a> on the repository.</li>
-      </ul>
     </div>
-    <div class="col-md-6">
 
-      <div class="header">
-        <h1>Results</h1>
-      </div>
-      <div class="todo-form">
-        <form>
-          <div class="form-group">
-            <textarea type="text" class="form-control input-lg" placeholder="Enter text..." ng-model="formData.text"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary btn-lg btn-block" ng-click="createTodo()">Add Todo</button>
-        </form>
-      </div>
-      <br>
-<!--       <div class="todo-list">
-        <ul ng-repeat="todo in todoData">
-          <li><h3><input class="lead" type="checkbox" ng-click="deleteTodo(todo.id)">&nbsp;{{ todo.protein_name }}</h3></li><hr>
-        </ul>
-      </div> -->
-      <table class="table table-bordered table-striped">
+    <div class="col-md-7">
+      <label>Analysis Results</label>
+      <table ng-cloak class="table table-bordered table-striped" ng-show="queryData.length > 0">
         <thread>
           <tr>
             <th scope="col">Swiss Prot ID</th>
             <th scope="col">Gene Name</th>
             <th scope="col">Entry Name</th>
             <th scope="col">Protein Name</th>
+            <th scope="col" ng-show="specificity.text == 'Identified'">Identified</th>
+            <th scope="col" ng-show="specificity.text == 'Identified'">Recommendation</th>
+            <th scope="col" ng-show="specificity.text == 'Quantified'">Quantified</th>
+            <th scope="col" ng-show="specificity.text == 'Quantified'">Recommendation</th>
+            <th scope="col" ng-show="specificity.text == 'Linear Range'">Linear Range</th>
+            <th scope="col" ng-show="specificity.text == 'Linear Range'">Recommendation</th>
           </tr>
         </thread>
         <tbody>
-          <tr ng-repeat="todo in todoData">
-            <!-- <th scope="row">0</th> -->
-            <td>&nbsp;{{ todo.swiss_prot_id }}</td>
-            <td>&nbsp;{{ todo.gene_name }}</td>
-            <td>&nbsp;{{ todo.entry_name }}</td>
-            <td>&nbsp;{{ todo.protein_name }}</td>
+          <tr ng-repeat="query in queryData">
+            <td class="ng-cloak">&nbsp;{{ query.swiss_prot_id }}</td>
+            <td class="ng-cloak">&nbsp;{{ query.gene_name }}</td>
+            <td class="ng-cloak">&nbsp;{{ query.entry_name }}</td>
+            <td class="ng-cloak">&nbsp;{{ query.protein_name }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'Identified'">&nbsp;{{ query.identified=='#N/A'? 'N/A' : query.identified }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'Identified'">&nbsp;{{ query.identified=='Both'? 'Undepleted' : query.identified=='#N/A'? 'Cannot be identified in either' : query.identified }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'Quantified'">&nbsp;{{ query.quantified=='#N/A'? 'N/A' : query.quantified }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'Quantified'">&nbsp;{{ query.quantified=='Both'? 'Undepleted' : query.quantified=='#N/A'? 'Cannot be quantified in either' : query.quantified }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'Linear Range'">&nbsp;{{ query.good_linearity=='#N/A'? 'N/A' : query.good_linearity }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'Linear Range'">&nbsp;{{ query.good_linearity=='#N/A'? 'Outside linear range' : query.good_linearity!='Both'? query.good_linearity : query.broader_linear_range=='Same'? 'Undepleted' : query.broader_linear_range }}</td>
           </tr>
         </tbody>
       </table>
+      <!-- <div class="container" style="border:1px solid #cecece">
+        <p>chart goes here</p>
+        <chart-form></chart-form>
+        <bar-chart height="options.height" data="data" hovered="hovered(args)"></bar-chart>
+      </div> -->
     </div>
-  </div> <!-- row -->
-<!--    <div class="alert alert-info text-center" role="alert">
-    Please do work through the Getting Started guide, even if you do know how to build such an application.  The guide covers the basics of working with Heroku, and will familiarize you with all the concepts you need in order to build and deploy your own apps.
-  </div> -->
-<br>
-<br>
-<br>
+  </div>
 </div>
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script> -->
+
 <script src="//code.jquery.com/jquery-2.2.4.min.js" type="text/javascript"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.6/angular.min.js"></script>
 <script src="javascripts/app.js"></script>
 </body>
 </html>
