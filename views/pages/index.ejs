@@ -11,42 +11,40 @@
 <div class="jumbotron text-center">
   <div class="container">
     <h1>Plasma Workflow Decision Tree</h1>
-    <h3>This application recommends an analysis technique based on the protein of interest and degree of detection.</h3>
   </div>
 </div>
 <div class="container">
   <div class="row">
     <div class="col-md-5">
       <div class="todo-form">
+        <p>This application recommends an analysis technique based on the protein of interest and degree of detection.</p>
+        <br>
         <form>
-          <!-- <div class="col-md-8"> -->
           <div class="form-group">
             <label>Enter proteins of interest: (eg. Q53GG5, GSTP1)</label>
-            <textarea class="form-control" rows="6" placeholder="Enter swiss prot id or gene name..." ng-model="proteinData.text"></textarea>
+            <textarea class="form-control" rows="5" placeholder="Enter swiss prot id or gene name..." ng-model="proteinData.text"></textarea>
           </div>
-        <!--   </div>
-          <div class="col-md-4"> -->
-          <div class="form-check">
-            <label>Select specificity:</label>
-            <br>
+          <label>Select specificity:</label>
+          <br>
+          <div class="radio-inline">
             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" ng-model="specificity.text" ng-init="specificity.text='Identified'" value="Identified" checked>
             <span class="form-check-label">
               Identified
             </span>
           </div>
-          <div class="form-check">
+          <div class="radio-inline">
             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" ng-model="specificity.text" value="Quantified">
             <span class="form-check-label">
               Quantified
             </span>
           </div>
-          <div class="form-check">
+          <div class="radio-inline">
             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" ng-model="specificity.text" value="Linear Range">
             <span class="form-check-label">
               Linear Range
             </span>
           </div>
-          <!-- </div> -->
+          <br>
           <br>
           <button class="btn btn-danger" type="submit" ng-click="queryTodo()">Submit</button>
         </form>
@@ -57,17 +55,13 @@
         <span class="ng-cloak" ng-show="exceptData.length > 0" ng-repeat="except in exceptData">&nbsp;{{ except.unnest }}{{$last ? '' : ','}}</span>
       </div>
       <br>
-      <div class="container" style="border:1px solid #cecece">
-        <chart-form></chart-form>
-        <bar-chart height="options.height" data="data" hovered="hovered(args)"></bar-chart>
-      </div>
-      <table class="table table-bordered table-striped">
+<!--       <table class="table table-bordered table-striped">
         <thread>
           <tr>
             <th scope="col">Swiss Prot ID</th>
             <th scope="col">Gene Name</th>
             <th scope="col">Entry Name</th>
-            <!-- <th scope="col">Protein Name</th> -->
+            <th scope="col">Protein Name</th>
             <th scope="col">Identified</th>
             <th scope="col">Quantified</th>
             <th scope="col">Good Linearity</th>
@@ -79,18 +73,18 @@
             <td class="ng-cloak">&nbsp;{{ todo.swiss_prot_id }}</td>
             <td class="ng-cloak">&nbsp;{{ todo.gene_name }}</td>
             <td class="ng-cloak">&nbsp;{{ todo.entry_name }}</td>
-            <!-- <td>&nbsp;{{ todo.protein_name }}</td> -->
+            <td>&nbsp;{{ todo.protein_name }}</td>
             <td class="ng-cloak">&nbsp;{{ todo.identified }}</td>
             <td class="ng-cloak">&nbsp;{{ todo.quantified }}</td>
             <td class="ng-cloak">&nbsp;{{ todo.good_linearity }}</td>
             <td class="ng-cloak">&nbsp;{{ todo.broader_linear_range }}</td>
           </tr>
         </tbody>
-      </table>
+      </table> -->
     </div>
 
     <div class="col-md-7">
-      <label>Analysis Results</label>
+      <p>Analysis Results</p>
       <table ng-cloak class="table table-bordered table-striped" ng-show="queryData.length > 0">
         <thread>
           <tr>
@@ -121,11 +115,9 @@
           </tr>
         </tbody>
       </table>
-      <!-- <div class="container" style="border:1px solid #cecece">
-        <p>chart goes here</p>
-        <chart-form></chart-form>
-        <bar-chart height="options.height" data="data" hovered="hovered(args)"></bar-chart>
-      </div> -->
+      <div class="demo-container" ng-app="pwdt" ng-controller="chartController">
+        <div id="chart" dx-chart="chartOptions"></div>
+      </div>
     </div>
   </div>
 </div>

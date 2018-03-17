@@ -1,8 +1,8 @@
 .jumbotron h1 {
   font-size: 55px;
 }
-.jumbotron h3 {
-  font-size: 19px;
+p {
+  font-size: 18px;
 }
 label {
   font-weight: 600;
@@ -14,7 +14,7 @@ label {
 .jumbotron {
   background: #532F8C;
   color: white;
-  padding-top: 10px;
+  padding-top: 25px;
   padding-bottom: 25px; }
 .jumbotron .btn-primary {
   background: #845ac7;
@@ -50,4 +50,8 @@ textarea { resize:vertical; }
 }
 .bar {
     fill: steelblue;
+}
+
+#chart {
+    height: 440px;
 }

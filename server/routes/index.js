@@ -9,6 +9,11 @@ router.get('/', (req, res, next) => {
     __dirname, '..', '..', 'views', 'pages', 'index.ejs'));
 });
 
+router.get('/db', (req, res, next) => {
+  res.render(path.join(
+    __dirname, '..', '..', 'views', 'pages', 'db.ejs'));
+});
+
 router.get('/api/v1/todos', (req, res, next) => {
   const results = [];
   // Get a Postgres client from the connection pool
