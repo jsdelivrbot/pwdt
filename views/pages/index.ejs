@@ -15,7 +15,7 @@
 </div>
 <div class="container">
   <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-6">
       <div class="todo-form">
         <p>This application recommends an analysis technique based on the protein of interest and degree of detection.</p>
         <br>
@@ -27,26 +27,26 @@
           <label>Select specificity:</label>
           <br>
           <div class="radio-inline">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" ng-model="specificity.text" ng-init="specificity.text='Identified'" value="Identified" checked>
+            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" ng-model="specificity.text" ng-init="specificity.text='identified'" value="identified" checked>
             <span class="form-check-label">
               Identified
             </span>
           </div>
           <div class="radio-inline">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" ng-model="specificity.text" value="Quantified">
+            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" ng-model="specificity.text" value="quantified">
             <span class="form-check-label">
               Quantified
             </span>
           </div>
           <div class="radio-inline">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" ng-model="specificity.text" value="Linear Range">
+            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" ng-model="specificity.text" value="good_linearity">
             <span class="form-check-label">
               Linear Range
             </span>
           </div>
           <br>
           <br>
-          <button class="btn btn-danger" type="submit" ng-click="queryTodo()">Submit</button>
+          <button class="btn btn-danger" type="submit" ng-click="query()">Submit</button>
         </form>
       </div>
       <br>
@@ -55,6 +55,37 @@
         <span class="ng-cloak" ng-show="exceptData.length > 0" ng-repeat="except in exceptData">&nbsp;{{ except.unnest }}{{$last ? '' : ','}}</span>
       </div>
       <br>
+      <p ng-cloak ng-show="queryData.length > 0">Analysis Results</p>
+      <table ng-cloak class="table table-bordered table-striped" ng-show="queryData.length > 0">
+        <thread>
+          <tr>
+            <th scope="col">Swiss Prot ID</th>
+            <th scope="col">Gene Name</th>
+            <th scope="col">Entry Name</th>
+            <th scope="col">Protein Name</th>
+            <th scope="col" ng-show="specificity.text == 'identified'">Identified</th>
+            <th scope="col" ng-show="specificity.text == 'identified'">Recommendation</th>
+            <th scope="col" ng-show="specificity.text == 'quantified'">Quantified</th>
+            <th scope="col" ng-show="specificity.text == 'quantified'">Recommendation</th>
+            <th scope="col" ng-show="specificity.text == 'good_linearity'">Linear Range</th>
+            <th scope="col" ng-show="specificity.text == 'good_linearity'">Recommendation</th>
+          </tr>
+        </thread>
+        <tbody>
+          <tr ng-repeat="query in queryData">
+            <td class="ng-cloak">&nbsp;{{ query.swiss_prot_id }}</td>
+            <td class="ng-cloak">&nbsp;{{ query.gene_name }}</td>
+            <td class="ng-cloak">&nbsp;{{ query.entry_name }}</td>
+            <td class="ng-cloak">&nbsp;{{ query.protein_name }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'identified'">&nbsp;{{ query.identified=='#N/A'? 'N/A' : query.identified }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'identified'">&nbsp;{{ query.identified=='Both'? 'Undepleted' : query.identified=='#N/A'? 'Cannot be identified in either' : query.identified }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'quantified'">&nbsp;{{ query.quantified=='#N/A'? 'N/A' : query.quantified }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'quantified'">&nbsp;{{ query.quantified=='Both'? 'Undepleted' : query.quantified=='#N/A'? 'Cannot be quantified in either' : query.quantified }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'good_linearity'">&nbsp;{{ query.good_linearity=='#N/A'? 'N/A' : query.good_linearity }}</td>
+            <td class="ng-cloak" ng-show="specificity.text == 'good_linearity'">&nbsp;{{ query.good_linearity=='#N/A'? 'Outside linear range' : query.good_linearity!='Both'? query.good_linearity : query.broader_linear_range=='Same'? 'Undepleted' : query.broader_linear_range }}</td>
+          </tr>
+        </tbody>
+      </table>
 <!--       <table class="table table-bordered table-striped">
         <thread>
           <tr>
@@ -83,8 +114,8 @@
       </table> -->
     </div>
 
-    <div class="col-md-7">
-      <p>Analysis Results</p>
+    <div class="col-md-6">
+      <!-- <p>Analysis Results</p>
       <table ng-cloak class="table table-bordered table-striped" ng-show="queryData.length > 0">
         <thread>
           <tr>
@@ -114,7 +145,7 @@
             <td class="ng-cloak" ng-show="specificity.text == 'Linear Range'">&nbsp;{{ query.good_linearity=='#N/A'? 'Outside linear range' : query.good_linearity!='Both'? query.good_linearity : query.broader_linear_range=='Same'? 'Undepleted' : query.broader_linear_range }}</td>
           </tr>
         </tbody>
-      </table>
+      </table> -->
       <div class="demo-container" ng-app="pwdt" ng-controller="chartController">
         <div id="chart" dx-chart="chartOptions"></div>
       </div>

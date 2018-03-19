@@ -1,4 +1,4 @@
-var chart = angular.module('chart', ['dx']);
+// var chart = angular.module('chart', ['dx']);
 var app = angular.module('pwdt', ['dx']);
 
 app.controller('mainController', ($scope, $http) => {
@@ -29,8 +29,9 @@ app.controller('mainController', ($scope, $http) => {
       console.log('Error: ' + error);
     });
   };
-  // Query todo
-  $scope.queryTodo = () => {
+  // Query proteins
+  $scope.query = () => {
+    var specificity = $scope.specificity.text;
     var proteinList = $scope.proteinData.text;
     $scope.proteinData.text = '';
     proteinList = proteinList.replace(new RegExp('\n', 'g'), ",");
@@ -45,6 +46,14 @@ app.controller('mainController', ($scope, $http) => {
     $http.get('/api/v1/query/' + proteinList)
     .success((data) => {
       $scope.queryData = data;
+      console.log(data);
+    })
+    .error((error) => {
+      console.log('Error: ' + error);
+    });
+    $http.get('/api/v1/update/' + specificity + '/' proteinList)
+    .success((data) => {
+      $scope.updateData = data;
       console.log(data);
     })
     .error((error) => {

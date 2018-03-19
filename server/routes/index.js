@@ -40,7 +40,7 @@ router.get('/api/v1/todos', (req, res, next) => {
 
 //Ids not in database
 router.get('/api/v1/except/:swiss_prot_id', (req, res, next) => {
-  console.log("we are querying ids not in table here")
+  console.log("querying ids not in table");
   const results = [];
   // Grab data from the URL parameters
   var id = req.params.swiss_prot_id;
@@ -73,7 +73,7 @@ router.get('/api/v1/except/:swiss_prot_id', (req, res, next) => {
 
 //Query id
 router.get('/api/v1/query/:id', (req, res, next) => {
-  console.log("we are querying here")
+  console.log("querying ids")
   const results = [];
   // Grab data from the URL parameters
   var id = req.params.id;
@@ -90,6 +90,41 @@ router.get('/api/v1/query/:id', (req, res, next) => {
     }
     // SQL Query > Select Data
     const query = client.query('SELECT * FROM pwdt WHERE swiss_prot_id = ANY($1::text[]) OR gene_name = ANY($1::text[])', [id.split(',')]);
+    // Stream results back one row at a time  ORDER BY swiss_prot_id ASC
+    query.on('row', (row) => {
+      results.push(row);
+    });
+
+    // After all data is returned, close connection and return results
+    query.on('end', () => {
+      done();
+      return res.json(results);
+    });
+  });
+});
+
+//Update chart based on queries grouped by plasma technique
+router.get('/api/v1/update/:specificity/:id', (req, res, next) => {
+  console.log("updating chart");
+  const results = [];
+  // Grab data from the URL parameters
+  var specificity = req.params.specificity;
+  var id = req.params.id;
+  console.log(req.params);
+  console.log(id);
+  console.log(specificity)
+  
+  // Get a Postgres client from the connection pool
+  pg.connect(connectionString, (err, client, done) => {
+    // Handle connection errors
+    if(err) {
+      done();
+      console.log(err);
+      return res.status(500).json({success: false, data: err});
+    }
+    // SQL Query > Select Data
+    const query = client.query('SELECT specificity, count(swiss_prot_id) FROM pwdt WHERE swiss_prot_id = ANY($1::text[]) OR gene_name = ANY($1::text[]) GROUP BY specificity', [id.split(',')]);
+    console.log(query);
     // Stream results back one row at a time  ORDER BY swiss_prot_id ASC
     query.on('row', (row) => {
       results.push(row);
