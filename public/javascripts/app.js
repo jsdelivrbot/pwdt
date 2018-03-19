@@ -51,14 +51,14 @@ app.controller('mainController', ($scope, $http) => {
     .error((error) => {
       console.log('Error: ' + error);
     });
-    // $http.get('/api/v1/update/' + specificity + '/' proteinList)
-    // .success((data) => {
-    //   $scope.updateData = data;
-    //   console.log(data);
-    // })
-    // .error((error) => {
-    //   console.log('Error: ' + error);
-    // });
+    $http.get('/api/v1/update/' + specificity + '/' proteinList)
+    .success((data) => {
+      $scope.updateData = data;
+      console.log(data);
+    })
+    .error((error) => {
+      console.log('Error: ' + error);
+    });
   };
   // Delete a todo
   $scope.deleteTodo = (todoID) => {

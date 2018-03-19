@@ -40,7 +40,7 @@ router.get('/api/v1/todos', (req, res, next) => {
 
 //Ids not in database
 router.get('/api/v1/except/:swiss_prot_id', (req, res, next) => {
-  console.log("querying ids not in table")
+  console.log("querying ids not in table");
   const results = [];
   // Grab data from the URL parameters
   var id = req.params.swiss_prot_id;
@@ -105,7 +105,7 @@ router.get('/api/v1/query/:id', (req, res, next) => {
 
 //Update chart based on queries grouped by plasma technique
 router.get('/api/v1/update/:specificity/:id', (req, res, next) => {
-  console.log("updating chart")
+  console.log("updating chart");
   const results = [];
   // Grab data from the URL parameters
   var specificity = req.params.specificity;
