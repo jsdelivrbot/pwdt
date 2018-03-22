@@ -1,8 +1,11 @@
 .jumbotron h1 {
-  font-size: 55px;
+  font-size: 60px;
 }
-p {
-  font-size: 18px;
+.jumbotron p {
+  color: #d9ccee;
+  max-width: 75%;
+  font-size: 16px;
+  margin: 5px auto 0em;
 }
 label {
   font-weight: 600;
@@ -14,19 +17,16 @@ label {
 .jumbotron {
   background: #532F8C;
   color: white;
-  padding-top: 25px;
-  padding-bottom: 25px; }
+  padding-top: 20px;
+  padding-bottom: 18px; }
 .jumbotron .btn-primary {
   background: #845ac7;
   border-color: #845ac7; }
 .jumbotron .btn-primary:hover {
   background: #7646c1; }
-.jumbotron p {
-  color: #d9ccee;
-  max-width: 75%;
-  margin: 1em auto 2em; }
 .navbar + .jumbotron {
-  margin-top: -20px; }
+  margin-top: -30px;
+  margin-bottom: 15px; }
 .jumbotron .lang-logo {
   display: block;
   background: #B01302;
@@ -39,6 +39,7 @@ label {
 .jumbotron .lang-logo img {
   max-width: 100%; }
 textarea { resize:vertical; }
+.placeholder {color: #aaa;}
 .axis path, .axis line {
     fill: none;
     stroke: black;
@@ -54,4 +55,28 @@ textarea { resize:vertical; }
 
 #chart {
     height: 440px;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 5px;
+}
+.table {
+  margin-bottom: 0px;
+}
+th, td {
+    font-size: 80%;
+}
+.sort-icon {
+    font-size: 9px;
+    margin-left: 5px;
+}
+
+th {
+    cursor:pointer;
+}
+.dropdown-menu {
+  min-width: 45px;
+  text-align: center;
+}
+.dropdown-menu>li>a {
+    padding: 3px 0px;
 }

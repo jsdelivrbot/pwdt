@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="pwdt">
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body ng-controller="mainController">
+
+  <% include ../partials/nav.ejs %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <h1>Plasma Dual Workflow</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+    <label>About This Tool</label>
+    <br>
+    <br>
+    <p>This application recommends an analysis technique based on the protein of interest and degree of detection.</p>
+    <br>
+    <p>The Plasma Distribution chart is intended to provide a better understanding of the recommended analysis techniques. Each queried protein is compared to the rest of the plasma proteins by highlighting it in its corresponding bin based on the analysis techniques that are appropriate for the specified degree of detection.</p>
+    <br>
+    <p>Recommendations are made based on the degree of detection achieved in depleted and undepleted samples. For each degree of detection, if the detection was achieved for the specified protein in only undepleted samples, or in both depleted and undepleted samples, the sample is recommended to be kept undepleted. If the detection was achieved in only depleted samples, the recommended analysis technique is depletion. If the degree of detection was not achieved in either depleted or undepleted samples, no recommendation can be made for the protein for that specific degree of detection.</p>
+
+    <br>
+    <br>
+    <label>Contact Us</label>
+    <br>
+    <br>
+    <p>Questions can be directed to lilith.huang@cshs.org</p>
+
+   	</div>
+   	<div class="col-md-8">
+   	<label>A Dual Workflow to Improve the Proteomic Coverage in Plasma Using Data-Independent Acquisition-MS</label>
+   	<br>
+   	<br>
+ 
+	<p>The plasma component of blood has long been used as the most important biofluid for diagnostic and prognostic clinical analyses. Every tissue ultimately interacts with plasma, which is readily available and easily sampled. Thus, by detecting and quantitatively analyzing the appropriate target, plasma can serve as an individualized window into physiology. Plasma is a complex biochemical matrix whose proteome spans a dynamic range in excess of 10 orders of magnitude in which the ten most abundant proteins account for 90% of its total protein mass. This broad and lopsided dynamic range of proteins within plasma can render the physiological window opaque to discovery-based analyses of less abundant proteins, which in turn can hinder new candidate biomarker discovery and clinical translation.</p>
+   	<br>
+	<p>Depletion strategies are important components of discovery workflows because they address the mass imbalance and broad dynamic range inherent to plasma. Selective depletion of highly abundant proteins can be accomplished by chemical and antibody-based methods. Chemical depletion involves the selective precipitation of high abundant targets such as serum albumin, while immunoaffinity-based methods generally employ immobilized antibodies targeted towards a series of high abundant plasma proteins. In both cases, the remaining effluent must be further prepared prior to downstream MS-based proteomic analysis. The absence of depletion inherently simplifies sample preparation and decreases the introduction of variance and error. Furthermore, depletion can therefore affect the quantitative profiles of high abundant proteins and their less-abundant binding partners. Nevertheless, relative to the analysis of undepleted plasma samples, depletion serves as an additional lens through which large numbers of less abundant and complementary plasma proteins can be revealed by MS.</p>
+   	<br>
+	<p>The advent of Data Independent Acquisition (DIA) has enabled the simultaneous quantitative analysis of hundreds of proteins in plasma samples in support population and disease studies and endowed MS-based discovery workflows with improved quantitative accuracy and reproducibility. While the value of depletion to proteomic coverage of low abundant targets extends to DIA-MS, its inclusion or exclusion yields samples with distinct biochemical matrices and altered protein compositions. In contrast to MRM/SRM approaches that target a constrained number of peptides for accurate quantitation, DIA workflows cannot be simultaneously tailored to suit all plasma protein subsets. Furthermore, the cumulative effects of depletion efficiency, specificity, and indiscriminate protein loss are assumed to be unequal across the proteome and several fundamental questions remain unaddressed. Specifically, to what extent does plasma depletion influence protein quantitation? What are the identities of the proteins whose quantitation is benefited or hindered by depletion? What are the combined advantages of analyzing both undepleted and depleted fractions of the same sample?</p>
+   	<br>
+	<p>Our work sought to address these questions by systematically optimizing and defining the preparative and DIA-MS-based acquisition parameters that maximize proteome coverage and quantitative accuracy from depleted- and undepleted plasma aliquots, respectively. We incorporated these optimized protocols to establish a parallel dual workflow strategy in which samples are divided into two aliquots: the first aliquot was shunted to IgY14-based depletion and desalting to target less-abundant candidates that minimally interact with high abundance matrix proteins; the second aliquot remained undepleted to preserve the quantitative accuracy among candidates that more extensively interact with high-abundance matrix proteins (such as albumins). Both depleted and undepleted aliquots were subject to DIA-MS analysis to maximize the proteomic coverage of a single sample. Finally, we systematically defined four major quantitative parameters of each observed protein (linearity cutoff r2>0.8; LLOQ, HLOQ-quantitative range; LLOD) and built a decision tree encompassing over 600 plasma proteins. Thus, our optimized dual workflow and its ensuing decision tree can serve as an important guide for the targeted quantitative analysis of specific protein subsets, or of broader discovery-based proteomic studies.</p>
+	<br>
+   	</div>
+  </div>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="javascripts/app.js"></script>
+</body>
+</html>
