@@ -218,17 +218,7 @@ app.controller('mainController', ($scope, $http) => {
     //   console.log('Error: ' + error);
     // });
   };
-  // Delete a todo
-  $scope.deleteTodo = (todoID) => {
-    $http.delete('/api/v1/todos/' + todoID)
-    .success((data) => {
-      $scope.todoData = data;
-      console.log(data);
-    })
-    .error((data) => {
-      console.log('Error: ' + data);
-    });
-  };
+
   $scope.updatePageSize = (size) => {
     $scope.p = size;
   };
@@ -329,8 +319,6 @@ app.controller('mainController', ($scope, $http) => {
     dataSource.load();
   }
 });
-
-// var chart = angular.module('chart', ['dx']);
 
 var dataSource = new DevExpress.data.DataSource({
   store: {
@@ -438,12 +426,4 @@ app.controller('chartController', ($scope, $http) => {
             enabled: true
         }
     };
-  // $scope.updateIdentified = () => {
-  //   console.log('button clicked');
-  //   var store = dataSource.store();
-  //   store.byKey('Identified').done(function (dataItem) {
-  //     store.update('Identified', { u_query: 1000});
-  //   });
-  //   dataSource.load();
-  // };
 });
