@@ -7,10 +7,6 @@
   font-size: 16px;
   margin: 5px auto 0em;
 }
-label {
-  font-weight: 600;
-  font-size: 15px;
-}
 .container {
   width: 95%;
 }
@@ -38,6 +34,13 @@ label {
   border: 2px solid white; }
 .jumbotron .lang-logo img {
   max-width: 100%; }
+label {
+  font-weight: 600;
+  font-size: 15px;
+}
+p {
+  text-align: justify;
+}
 textarea { resize:vertical; }
 .placeholder {color: #aaa;}
 .axis path, .axis line {
@@ -62,21 +65,66 @@ textarea { resize:vertical; }
 .table {
   margin-bottom: 0px;
 }
-th, td {
-    font-size: 80%;
-}
+
 .sort-icon {
     font-size: 9px;
     margin-left: 5px;
 }
-
 th {
     cursor:pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+td {
+    font-size: 13px;
+}
+#pagination {
+  min-width: 61px;
 }
 .dropdown-menu {
-  min-width: 45px;
+  min-width: 61px;
   text-align: center;
 }
 .dropdown-menu>li>a {
-    padding: 3px 0px;
+    padding: 3px 11px 3px 0px;
+}
+#items {
+  margin: 10px 0px 18px 20px; ;
+}
+#exportButton {
+    float: right;
+    display: fix !important;
+    margin-right: 0em;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+.pagination {
+    margin: 10px 0;
+}
+.form-group-inline label{
+  font-size: 13px;
+  margin: 10px 0px 18px 0px;
+}
+.form-control {
+  padding: 7px;
+}
+a:link {
+    color: blue; 
+    background-color: transparent; 
+    text-decoration: none;
+}
+a:hover {
+    color: blue;
+    background-color: transparent;
+    text-decoration: underline;
+}
+a:visited {
+    color: blue;
+    background-color: transparent;
+    text-decoration: none;
+}
+a:active {
+    color: red;
+    background-color: transparent;
+    text-decoration: underline;
 }
