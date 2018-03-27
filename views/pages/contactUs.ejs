@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app="pwdt">
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body ng-controller="mainController">
+
+  <% include ../partials/nav.ejs %>
+
+<div class="jumbotron text-center">
+  <div class="container">
+    <h1>Plasma Dual Workflow</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-5">
+      <br>
+      <label>Contact Us</label>
+      <br>
+      <br>
+      <p>Vidya Venkatraman</p>
+      <br>
+      <p>Bioinformatics Lead</p>
+      <br>
+      <p>Advanced Clinical Biosystems Research Institute</p>
+      <br>
+      <p>Cedars-Sinai Medical Center</p>
+      <br>
+      <p>vidya.venkatraman@cshs.org</p>
+      <br>
+      <p>Visit our website</p>
+    </div>
+    <div class="col-md-7">
+      <br>
+      <label>About This Tool</label>
+      <br>
+      <br>
+      <p>This application recommends the appropriate plasma sample preparation technique based on the protein of interest and degree of detection/quantitation.</p>
+      <br>
+      <label>Identified:</label>
+      <p>Specifies the plasma analysis techniques that can be used to identify the query protein.</P>
+      <br>
+      <label>Quantified:</label>
+      <p>Specifies the plasma analysis techniques that can be used to quantify the query protein.</P>
+      <br>
+      <label>Linear Range:</label>
+      <p>Specifies the plasma analysis techniques that provide good linear range for the query protein.</P>
+      <br>
+      <p>The user can provide a list of protein IDs or gene names (separated by new line or comma) as query list along with one of the 3 modes of detection/quantitation.</p>
+      <br>
+      <p>As part of the analysis results, we provide the observed sample preparation results along with recommendations based on the mode selected. Recommendations are made based on the degree of detection achieved in depleted and undepleted samples. For each degree of detection, if the detection was achieved for the specified protein in only undepleted samples, or in both depleted and undepleted samples, the sample is recommended to be kept undepleted. If the detection was achieved in only depleted samples, the recommended analysis technique is depletion. If the degree of detection was not achieved in either depleted or undepleted samples, no recommendation can be made for the protein for that specific degree of detection.</p>
+      <br>
+      <p>The Plasma Distribution chart is intended to provide a better understanding of the recommended analysis techniques. Each queried protein is compared to the rest of the plasma proteins by highlighting it in its corresponding bin based on the analysis techniques that are appropriate for the specified degree of detection.</p>
+      <br>
+      <br>
+   	</div>
+  </div>
+</div>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="javascripts/app.js"></script>
+</body>
+</html>

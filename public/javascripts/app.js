@@ -15,6 +15,95 @@ app.controller('mainController', ($scope, $http) => {
     $scope.reverse = !$scope.reverse; //if true make it false and vice versa
   };
 
+  $scope.export = function() {
+    if ($scope.specificity.text == 'identified') {
+      jQuery(function ($) {
+        $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow', ignoreColumn: [6, 7, 8, 9]});
+      });
+    }
+    else if ($scope.specificity.text == 'quantified') {
+      jQuery(function ($) {
+        $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow', ignoreColumn: [4, 5, 8, 9]});
+      });
+    }
+    else if ($scope.specificity.text == 'good_linearity') {
+      jQuery(function ($) {
+        $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow', ignoreColumn: [4, 5, 6, 7]});
+      });
+    }
+    else {
+      jQuery(function ($) {
+        $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow'});
+      });
+    }
+  }
+
+  // $scope.myFilter = function (item) { 
+  //   return item.gene_name === 'GSN' || item === $scope.search; 
+  // };
+
+  app.filter('myFilter', function() {
+    return function(items, search) {
+      console.log(search);
+      var filtered = [];
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if (item.swiss_prot_id.includes(searchKey)) {
+          filtered.push(item);
+        }
+      }
+      return filtered;
+    };
+  });
+
+  app.filter('customSearch', function () {
+    return function (items, search, specificity) {
+      var filtered = [];
+      var searchKey = search.toUpperCase();
+      var specVal = item[specificity].toUpperCase();
+      var recVal;
+      if (specificity == 'identified') {
+        if (specVal == 'BOTH') {
+          recVal == 'UNDEPLETED';
+        }
+        if (specVal == '#N/A') {
+          item[specificity] == 'N/A';
+          recVal == 'CANNOT BE IDENTIFIED IN EITHER';
+        }
+      }
+      // if (specificity == 'quantified') {
+
+      // }
+      // if (specificity == 'good_linearity') {
+
+      // }
+      var blrVal = item.broader_linear_range.toUpperCase();
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        if (item.swiss_prot_id.includes(searchKey)) {
+          filtered.push(item);
+        }
+        else if (item.gene_name.includes(searchKey)) {
+          filtered.push(item);
+        }
+        else if (item.entry_name.includes(searchKey)) {
+          filtered.push(item);
+        }
+        else if (item.protein_name.includes(searchKey)) {
+          filtered.push(item);
+        }
+        else if (specVal.includes(searchKey)) {
+          filtered.push(item);
+        }
+        else if(searchKey == 'UNDEPLETED' && specVal == "BOTH") {
+          filtered.push(item);
+        }
+        // else if(specificity == 'good_linearity' && blrVal == 'SAME' && specVal == "BOTH") 
+      }
+      return filtered;
+    };
+  });
+
   // Get all todos
   $http.get('/api/v1/todos')
   .success((data) => {
@@ -304,6 +393,10 @@ app.controller('chartController', ($scope, $http) => {
             label: {
               showForZeroValues: false,
               position: 'outside',
+              font: {
+                color: '#000000'
+              },
+              backgroundColor: "rgba(100, 100, 100, 0.5);",
               // format: {type: 'percent', percentPrecision: 2},
               customizeText: function() {
                 return this.percent.toFixed(3) + "%";
@@ -315,10 +408,10 @@ app.controller('chartController', ($scope, $http) => {
             { valueField: "depleted", name: "Depleted", stack: "Depleted", color: "#A5D6A7" },
             { valueField: "both", name: "Both", stack: "Both", color: "#90CAF9" },
             { valueField: "na", name: "N/A", stack: "N/A", color: "#CE93D8" },
-            { valueField: "u_query", name: "Undepleted: Query Proteins", stack: "Undepleted", color: "#B71C1C", showInLegend: false, label:{ visible: true} },
-            { valueField: "d_query", name: "Depleted: Query Proteins", stack: "Depleted", color: "#33691E", showInLegend: false, label:{ visible: true} },
-            { valueField: "b_query", name: "Both: Query Proteins", stack: "Both", color: "#0D47A1", showInLegend: false, label:{ visible: true} },
-            { valueField: "na_query", name: "N/A: Query Proteins", stack: "N/A", color: "#6A1B9A", showInLegend: false, label:{ visible: true} }
+            { valueField: "u_query", name: "Undepleted: Query Proteins", stack: "Undepleted", color: "#B71C1C", showInLegend: false, label:{ visible: true, font:{color: "#B71C1C"}} },
+            { valueField: "d_query", name: "Depleted: Query Proteins", stack: "Depleted", color: "#33691E", showInLegend: false, label:{ visible: true, font:{color: "#33691E"}} },
+            { valueField: "b_query", name: "Both: Query Proteins", stack: "Both", color: "#0D47A1", showInLegend: false, label:{ visible: true, font:{color: "#0D47A1"}} },
+            { valueField: "na_query", name: "N/A: Query Proteins", stack: "N/A", color: "#6A1B9A", showInLegend: false, label:{ visible: true, font:{color: "#6A1B9A"}} }
         ],
         legend: {
             // horizontalAlignment: "right",
@@ -337,7 +430,9 @@ app.controller('chartController', ($scope, $http) => {
         },
         title: "Plasma Distribution",
         "export": {
-            enabled: true
+            enabled: true,
+            fileName: "Plasma_Distribution",
+            formats: ['PNG', 'PDF', 'JPEG']
         },
         tooltip: {
             enabled: true

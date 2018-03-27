@@ -46,10 +46,7 @@
           <button class="btn btn-danger pull-right" type="submit" ng-click="query()">Submit</button>
 <!--           <button class="btn btn-danger" type="submit" ng-click="specificity.text == 'good_linearity'? updateChartLinearity(specificity.text) : updateChart(specificity.text)">Submit</button> -->
         </form>
-<!--         <script>
-          $('textarea[placeholder]').placeholder();
-        </script>
- -->      </div>
+      </div>
       <br>
       <div class="todo-list">
         <label class="ng-cloak" ng-show="exceptData.length > 0">Proteins not in database: </label>
@@ -73,12 +70,11 @@
               <li><a ng-click="updatePageSize('50')">50</a></li>
               <li><a ng-click="updatePageSize('100')">100</a></li>
             </ul>
-
+            <button type="button" ng-cloak ng-show="queryData.length > 0" ng-click="export()" id="exportButton" class="btn btn-default clearfix"><span class="fa fa-file-excel-o"></span> Export</button>
           </div>
-
-<!--             <input type="text" class="form-control" ng-model="pageSize" placeholder="10" ng-init="pageSize='10'"> -->
         </div>
       </form>
+
       <table ng-cloak id="example" class="table table-bordered table-striped" ng-show="queryData.length > 0">
         <thread>
           <tr>
@@ -96,6 +92,8 @@
         </thread>
         <tbody>
           <tr dir-paginate="query in queryData|filter:search|itemsPerPage:p">
+<!--           <tr dir-paginate="query in queryData|myFilter:search|itemsPerPage:p"> -->
+<!--           <tr dir-paginate="query in queryData|customSearch:search:specificity|itemsPerPage:p"> -->
             <td class="ng-cloak">&nbsp;{{ query.swiss_prot_id }}</td>
             <td class="ng-cloak">&nbsp;{{ query.gene_name }}</td>
             <td class="ng-cloak">&nbsp;{{ query.entry_name }}</td>
@@ -112,6 +110,38 @@
       <div class="text-center">
         <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" ></dir-pagination-controls>
       </div>
+
+<!-- Hidden table to be exported -->
+      <table hidden id="export" class="table table-bordered table-striped">
+        <thread>
+          <tr>
+            <th scope="col">Swiss Prot ID</th>
+            <th scope="col">Gene Name</th>
+            <th scope="col">Entry Name</th>
+            <th scope="col">Protein Name</th>
+            <th scope="col">Identified</th>
+            <th scope="col">Recommendation</th>
+            <th scope="col">Quantified</th>
+            <th scope="col">Recommendation</th>
+            <th scope="col">Linear Range</th>
+            <th scope="col">Recommendation</th>
+          </tr>
+        </thread>
+        <tbody>
+          <tr ng-repeat="query in queryData">
+            <td>&nbsp;{{ query.swiss_prot_id }}</td>
+            <td>&nbsp;{{ query.gene_name }}</td>
+            <td>&nbsp;{{ query.entry_name }}</td>
+            <td>&nbsp;{{ query.protein_name }}</td>
+            <td>&nbsp;{{ query.identified=='#N/A'? 'N/A' : query.identified }}</td>
+            <td>&nbsp;{{ query.identified=='Both'? 'Undepleted' : query.identified=='#N/A'? 'Cannot be identified in either' : query.identified }}</td>
+            <td>&nbsp;{{ query.quantified=='#N/A'? 'N/A' : query.quantified }}</td>
+            <td>&nbsp;{{ query.quantified=='Both'? 'Undepleted' : query.quantified=='#N/A'? 'Cannot be quantified in either' : query.quantified }}</td>
+            <td>&nbsp;{{ query.good_linearity=='#N/A'? 'N/A' : query.good_linearity }}</td>
+            <td>&nbsp;{{ query.good_linearity=='#N/A'? 'Outside linear range' : query.good_linearity!='Both'? query.good_linearity : query.broader_linear_range=='Same'? 'Undepleted' : query.broader_linear_range }}</td>
+          </tr>
+        </tbody>
+      </table>
 
 <!--       <table class="table table-bordered table-striped">
         <thread>

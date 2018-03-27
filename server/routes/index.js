@@ -14,9 +14,14 @@ router.get('/db', (req, res, next) => {
     __dirname, '..', '..', 'views', 'pages', 'db.ejs'));
 });
 
-router.get('/contact', (req, res, next) => {
+router.get('/contactUs', (req, res, next) => {
   res.render(path.join(
-    __dirname, '..', '..', 'views', 'pages', 'contact.ejs'));
+    __dirname, '..', '..', 'views', 'pages', 'contactUs.ejs'));
+});
+
+router.get('/gettingStarted', (req, res, next) => {
+  res.render(path.join(
+    __dirname, '..', '..', 'views', 'pages', 'gettingStarted.ejs'));
 });
 
 router.get('/api/v1/todos', (req, res, next) => {
