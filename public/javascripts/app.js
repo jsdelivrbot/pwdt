@@ -433,29 +433,29 @@ app.controller('chartController', ($scope, $http) => {
 
               if (arg.seriesName == "Undepleted: Query Proteins") {
                 return {
-                  text: "Undepleted:\n" + $scope.querySpecificity[specArg].Undepleted.toString().replace(new RegExp(',', 'g'), "\n")
+                  text: $scope.querySpecificity[specArg].Undepleted.toString().replace(new RegExp(',', 'g'), "\n")
                 };
               }
               else if (arg.seriesName == "Depleted: Query Proteins") {
                 return {
-                  text: "Depleted:\n" + $scope.querySpecificity[specArg].Depleted.toString().replace(new RegExp(',', 'g'), "\n")
+                  text: $scope.querySpecificity[specArg].Depleted.toString().replace(new RegExp(',', 'g'), "\n")
                 };
               }
               else if (arg.seriesName == "Both: Query Proteins") {
                 if (specArg == "broader_linear_range") {
                   return {
-                    text:  "Both:\n" +$scope.querySpecificity[specArg].Same.toString().replace(new RegExp(',', 'g'), "\n")
+                    text: $scope.querySpecificity[specArg].Same.toString().replace(new RegExp(',', 'g'), "\n")
                   };
                 }
                 else {
                   return {
-                    text:  "Both:\n" +$scope.querySpecificity[specArg].Both.toString().replace(new RegExp(',', 'g'), "\n")
+                    text: $scope.querySpecificity[specArg].Both.toString().replace(new RegExp(',', 'g'), "\n")
                   };
                 }
               }
               else if (arg.seriesName == "N/A: Query Proteins") {
                 return {
-                  text:  "N/A:\n" +$scope.querySpecificity[specArg].NA.toString().replace(new RegExp(',', 'g'), "\n")
+                  text: $scope.querySpecificity[specArg].NA.toString().replace(new RegExp(',', 'g'), "\n")
                 };
               }
               else {

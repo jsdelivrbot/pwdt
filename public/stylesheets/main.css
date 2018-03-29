@@ -79,6 +79,12 @@ th {
 td {
     font-size: 13px;
 }
+#abundant th {
+    font-size: 17px;
+}
+#abundant td {
+    font-size: 15px;
+}
 #pagination {
   min-width: 61px;
 }
@@ -128,4 +134,13 @@ a:active {
     color: red;
     background-color: transparent;
     text-decoration: underline;
+}
+.pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
+    cursor: not-allowed;
+    background-color: #f1f1f1;
+    pointer-events: none;
+}
+.col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9 {
+    padding-right: 20px;
+    padding-left: 20px;
 }

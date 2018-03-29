@@ -24,6 +24,16 @@ router.get('/about', (req, res, next) => {
     __dirname, '..', '..', 'views', 'pages', 'about.ejs'));
 });
 
+router.get('/methodology', (req, res, next) => {
+  res.render(path.join(
+    __dirname, '..', '..', 'views', 'pages', 'methodology.ejs'));
+});
+
+router.get('/abundant', (req, res, next) => {
+  res.render(path.join(
+    __dirname, '..', '..', 'views', 'pages', 'abundantProteins.ejs'));
+});
+
 router.get('/api/v1/todos', (req, res, next) => {
   const results = [];
   // Get a Postgres client from the connection pool
