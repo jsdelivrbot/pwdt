@@ -10,8 +10,9 @@
 
 <div class="jumbotron text-center">
   <div class="container">
-    <h1>Plasma Dual Workflow</h1>
-    <p>This application recommends an analysis technique based on the protein of interest and degree of detection.</p>
+    <h1>PlasmaPilot</h1>
+    <p>PlasmaPilot is based on experimentally defined, bottom-up human plasma proteomics.</p>
+    <p>Our goal is provide a prospective sample preparation guide for the quantitative MS-based analysis of a list of 757* plasma proteins.</p>
   </div>
 </div>
 <div class="container">
@@ -20,10 +21,10 @@
       <div class="form">
         <form>
           <div class="form-group">
-            <label>Enter Proteins of Interest: (eg. Q53GG5, GSTP1)</label>
+            <label>Enter Uniprot ID or Gene Name of Proteins:</label>
             <textarea class="form-control" placeholder="Q53GG5, GSTP1" rows="3" ng-model="proteinData.text"></textarea>
           </div>
-          <label>Select Specificity:</label>
+          <label>Select Analytical Requirement:</label>
           <br>
           <div class="radio-inline">
             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" ng-model="specificity.text" ng-init="specificity.text='identified'" value="identified" ng-click="updateChart(specificity.text)" checked>
@@ -40,7 +41,7 @@
           <div class="radio-inline">
             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" ng-model="specificity.text" value="good_linearity" ng-click="updateChartLinearity(specificity.text)">
             <span class="form-check-label">
-              Linear Range
+              Linear Range (r<sup>2</sup> > 0.8)
             </span>
           </div>
           <button class="btn btn-danger pull-right" type="submit" ng-click="query()">Submit</button>
@@ -77,7 +78,7 @@
       <table ng-cloak id="example" class="table table-bordered table-striped" ng-show="queryData.length > 0">
         <thread>
           <tr>
-            <th scope="col">Swiss Prot ID</th>
+            <th scope="col">Uniprot ID</th>
             <th scope="col">Gene Name</th>
             <th scope="col">Entry Name</th>
             <th scope="col">Protein Name</th>
@@ -90,7 +91,7 @@
           </tr>
         </thread>
         <tbody>
-          <tr dir-paginate="query in queryData|filter:search|itemsPerPage:p">
+          <tr dir-paginate="query in queryData|itemsPerPage:p">
 <!--           <tr dir-paginate="query in queryData|myFilter:search|itemsPerPage:p"> -->
 <!--           <tr dir-paginate="query in queryData|customSearch:search:specificity|itemsPerPage:p"> -->
             <td class="ng-cloak">&nbsp;{{ query.swiss_prot_id }}</td>
@@ -108,14 +109,14 @@
       </table>
       <div>
         <dir-pagination-controls max-size="5" direction-links="true" boundary-links="true" ></dir-pagination-controls>
-        <button border-radius: 2px; type="button" ng-cloak ng-show="queryData.length > 0" ng-click="export()" id="exportButton" class="btn btn-default clearfix float-right text-right"><span class="fa fa-file-excel-o"></span> Export</button>
+        <button border-radius: 2px; type="button" ng-cloak ng-show="queryData.length > 0" ng-click="export()" id="exportButton" class="btn btn-primary clearfix float-right text-right"><span class="fa fa-file-excel-o"></span> Export</button>
       </div>
 
 <!-- Hidden table to be exported -->
       <table hidden id="export" class="table table-bordered table-striped">
         <thread>
           <tr>
-            <th scope="col">Swiss Prot ID</th>
+            <th scope="col">Uniprot ID</th>
             <th scope="col">Gene Name</th>
             <th scope="col">Entry Name</th>
             <th scope="col">Protein Name</th>

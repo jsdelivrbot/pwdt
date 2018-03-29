@@ -3,9 +3,10 @@
 }
 .jumbotron p {
   color: #d9ccee;
-  max-width: 75%;
-  font-size: 16px;
+  max-width: 100%;
+  font-size: 17px;
   margin: 5px auto 0em;
+  text-align: center;
 }
 .container {
   width: 95%;
