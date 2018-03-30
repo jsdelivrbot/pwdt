@@ -19,3 +19,9 @@
     </ul>
   </div>
 </nav>
+<script>
+  $(".nav a").on("click", function(){
+     $(".nav").find(".active").removeClass("active");
+     $(this).addClass("active");
+  });
+</script>

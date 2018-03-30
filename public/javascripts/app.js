@@ -9,100 +9,12 @@ app.controller('mainController', ($scope, $http) => {
   $scope.specificity = {};
   $scope.querySpecificity = {};
   $scope.p = 5;
+  $scope.results = {}
 
   $scope.sort = function(keyname){
     $scope.sortKey = keyname;   //set the sortKey to the param passed
     $scope.reverse = !$scope.reverse; //if true make it false and vice versa
   };
-
-  $scope.export = function() {
-    if ($scope.specificity.text == 'identified') {
-      jQuery(function ($) {
-        $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow', ignoreColumn: [6, 7, 8, 9]});
-      });
-    }
-    else if ($scope.specificity.text == 'quantified') {
-      jQuery(function ($) {
-        $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow', ignoreColumn: [4, 5, 8, 9]});
-      });
-    }
-    else if ($scope.specificity.text == 'good_linearity') {
-      jQuery(function ($) {
-        $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow', ignoreColumn: [4, 5, 6, 7]});
-      });
-    }
-    else {
-      jQuery(function ($) {
-        $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow'});
-      });
-    }
-  }
-
-  // $scope.myFilter = function (item) { 
-  //   return item.gene_name === 'GSN' || item === $scope.search; 
-  // };
-
-  app.filter('myFilter', function() {
-    return function(items, search) {
-      console.log(search);
-      var filtered = [];
-      for (var i = 0; i < items.length; i++) {
-        var item = items[i];
-        if (item.swiss_prot_id.includes(searchKey)) {
-          filtered.push(item);
-        }
-      }
-      return filtered;
-    };
-  });
-
-  app.filter('customSearch', function () {
-    return function (items, search, specificity) {
-      var filtered = [];
-      var searchKey = search.toUpperCase();
-      var specVal = item[specificity].toUpperCase();
-      var recVal;
-      if (specificity == 'identified') {
-        if (specVal == 'BOTH') {
-          recVal == 'UNDEPLETED';
-        }
-        if (specVal == '#N/A') {
-          item[specificity] == 'N/A';
-          recVal == 'CANNOT BE IDENTIFIED IN EITHER';
-        }
-      }
-      // if (specificity == 'quantified') {
-
-      // }
-      // if (specificity == 'good_linearity') {
-
-      // }
-      var blrVal = item.broader_linear_range.toUpperCase();
-      for (var i = 0; i < items.length; i++) {
-        var item = items[i];
-        if (item.swiss_prot_id.includes(searchKey)) {
-          filtered.push(item);
-        }
-        else if (item.gene_name.includes(searchKey)) {
-          filtered.push(item);
-        }
-        else if (item.entry_name.includes(searchKey)) {
-          filtered.push(item);
-        }
-        else if (item.protein_name.includes(searchKey)) {
-          filtered.push(item);
-        }
-        else if (specVal.includes(searchKey)) {
-          filtered.push(item);
-        }
-        else if(searchKey == 'UNDEPLETED' && specVal == "BOTH") {
-          filtered.push(item);
-        }
-        // else if(specificity == 'good_linearity' && blrVal == 'SAME' && specVal == "BOTH") 
-      }
-      return filtered;
-    };
-  });
 
   // Get all todos
   $http.get('/api/v1/todos')
@@ -154,13 +66,19 @@ app.controller('mainController', ($scope, $http) => {
         NA: []
       }
     };
+
+    $scope.results = {
+      identified: [],
+      quantified: [],
+      good_linearity: []
+    }
+
     console.log('query');
     var specificity = $scope.specificity.text;
     console.log($scope.specificity.text);
     console.log('again');
     var proteinList = $scope.proteinData.text.toUpperCase();
     $scope.proteinData.text = '';
-    //proteinList = proteinList.replace(new RegExp(', ', 'g'), ",").replace(new RegExp('\n', 'g'), ",");
     proteinList = proteinList.replace(new RegExp(', ', 'g'), ",").replace(/\s+/g, ',');
     $http.get('/api/v1/except/' + proteinList)
     .success((data) => {
@@ -175,6 +93,10 @@ app.controller('mainController', ($scope, $http) => {
       $scope.queryData = data;
       console.log(data);
       data.map(function(protein) {
+        $scope.results.identified.push({"swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.identified=='#N/A'? 'N/A' : protein.identified, "recommendation": protein.identified=='Both'? 'Undepleted' : protein.identified=='#N/A'? 'Cannot be identified in either' : protein.identified});
+        $scope.results.quantified.push({"swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.quantified=='#N/A'? 'N/A' : protein.quantified, "recommendation": protein.quantified=='Both'? 'Undepleted' : protein.quantified=='#N/A'? 'Cannot be quantified in either' : protein.quantified});
+        $scope.results.good_linearity.push({"swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.good_linearity=='#N/A'? 'N/A' : protein.good_linearity, "recommendation":  protein.good_linearity=='#N/A'? 'Outside linear range' : protein.good_linearity!='Both'? protein.good_linearity : protein.broader_linear_range=='Same'? 'Undepleted' : protein.broader_linear_range});
+
         $scope.querySpecificity.identified[protein.identified].push(protein.swiss_prot_id);
         if (protein.quantified == "#N/A") {
           $scope.querySpecificity.quantified["NA"].push(protein.swiss_prot_id);
@@ -206,17 +128,13 @@ app.controller('mainController', ($scope, $http) => {
     .error((error) => {
       console.log('Error: ' + error);
     });
-    // $http.get('/api/v1/update/' + specificity + '/' + proteinList)
-    // .success((data) => {
-    //   $scope.updateData = data;
-    //   $scope.updateIdentified(specificity, 1000);
-    //   console.log(data[0][specificity]);
-    //   console.log('here');
-    // })
-    // .error((error) => {
-    //   console.log('Error: ' + error);
-    // });
   };
+
+  $scope.export = function() {
+    jQuery(function ($) {
+      $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow'});
+    });
+  }
 
   $scope.updatePageSize = (size) => {
     $scope.p = size;
