@@ -14,7 +14,7 @@
 .jumbotron {
   background: #532F8C;
   color: white;
-  padding-top: 20px;
+  padding-top: 17px;
   padding-bottom: 18px; }
 .jumbotron .btn-primary {
   background: #845ac7;
@@ -160,3 +160,5 @@ a:active {
     display: block;
     text-align: left;
 }
+
+
