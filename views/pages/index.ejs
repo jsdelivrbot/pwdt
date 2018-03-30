@@ -12,7 +12,7 @@
   <div class="container">
     <h1>PlasmaPilot</h1>
     <p>PlasmaPilot is based on experimentally defined, bottom-up human plasma proteomics.</p>
-    <p>Our goal is provide a prospective sample preparation guide for the quantitative MS-based analysis of a list of 757* plasma proteins.</p>
+    <p>Our goal is provide a prospective sample preparation guide for the quantitative MS-based analysis of a list of 757 plasma proteins.</p>
   </div>
 </div>
 <div class="container">
@@ -88,12 +88,12 @@
         </thread>
         <tbody>
           <tr dir-paginate="query in results[specificity.text]|filter:search|itemsPerPage:p">
-            <td class="ng-cloak">&nbsp;{{ query.swiss_prot_id }}</td>
-            <td class="ng-cloak">&nbsp;{{ query.gene_name }}</td>
-            <td class="ng-cloak">&nbsp;{{ query.entry_name }}</td>
-            <td class="ng-cloak">&nbsp;{{ query.protein_name }}</td>
-            <td class="ng-cloak">&nbsp;{{ query.specificity }}</td>
-            <td class="ng-cloak">&nbsp;{{ query.recommendation }}</td>
+            <td class="ng-cloak">{{ query.swiss_prot_id }}</td>
+            <td class="ng-cloak">{{ query.gene_name }}</td>
+            <td class="ng-cloak">{{ query.entry_name }}</td>
+            <td class="ng-cloak">{{ query.protein_name }}</td>
+            <td class="ng-cloak">{{ query.specificity }}</td>
+            <td class="ng-cloak">{{ query.recommendation }}</td>
             </tr>
         </tbody>
       </table>

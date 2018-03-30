@@ -132,7 +132,7 @@ app.controller('mainController', ($scope, $http) => {
 
   $scope.export = function() {
     jQuery(function ($) {
-      $('#export').tableExport({type:'csv', fileName: 'Plasma Dual Workflow'});
+      $('#export').tableExport({type:'csv', fileName: 'PlasmaPilot_Results'});
     });
   }
 
