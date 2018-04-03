@@ -199,3 +199,7 @@ a:active {
   float: right!important;
 }
 */
+
+.subtitles p {
+  margin-bottom: 2px;
+}
