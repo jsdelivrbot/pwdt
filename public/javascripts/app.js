@@ -333,15 +333,21 @@ app.controller('chartController', ($scope, $http) => {
             // rowItemSpacing: 6, 
             columnItemSpacing: 8
         },
+        argumentAxis: {
+            label: {
+                overlappingBehavior: "rotate",
+                rotationAngle: -30
+            }
+        },
         valueAxis: {
             title: {
                 text: "Number of Proteins"
             }
         },
-        title: "Plasma Distribution",
+        title: "Plasma Workflow Distribution",
         "export": {
             enabled: true,
-            fileName: "Plasma_Distribution",
+            fileName: "Plasma_Workflow_Distribution",
             formats: ['PNG', 'PDF', 'JPEG']
         },
         tooltip: {

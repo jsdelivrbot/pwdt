@@ -1,22 +1,31 @@
-.jumbotron h1 {
-  margin: 8px 0px;
-  font-size: 60px;
-}
-.jumbotron p {
-  color: #d9ccee;
-  max-width: 100%;
-  font-size: 17px;
-  margin: 5px auto 0em;
-  text-align: center;
-}
-.container {
-  width: 90%;
-}
 .jumbotron {
   background: #532F8C;
   color: white;
   padding-top: 10px;
-  padding-bottom: 18px; }
+  padding-bottom: 20px; }
+.jumbotron img {
+  float: left;
+  width: auto;
+  height: 60px;
+  background: #555;
+}
+.navbar-brand>img {
+  height: 100%;
+}
+.jumbotron h1 {
+  font-size: 60px;
+  margin-top: 10px;
+}
+.jumbotron p {
+  color: #d9ccee;
+  max-width: 100%;
+  font-size: 16px;
+  margin: 5px auto 0em;
+  text-align: center;
+}
+.container {
+  width: 95%;
+}
 .jumbotron .btn-primary {
   background: #845ac7;
   border-color: #845ac7; }
@@ -67,7 +76,14 @@ textarea { resize:vertical; }
 .table {
   margin-bottom: 0px;
 }
-
+#abundant {
+  width: 80%;
+  margin: 0px auto;
+}
+#abundant-text {
+  width: 80%;
+  margin: 0px auto;
+}
 .sort-icon {
     font-size: 9px;
     margin-left: 5px;
@@ -141,17 +157,25 @@ a:active {
     background-color: #f1f1f1;
     pointer-events: none;
 }
-.col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9 {
-    padding-right: 20px;
-    padding-left: 20px;
+.col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-lg-6 {
+    padding-right: 10px;
+    padding-left: 10px;
 }
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-menu {
     display: block;
 }
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropdown-toggle {
+/*.dropdown:hover .dropdown-toggle {
     color: white;
+}*/
+
+.navbar-inverse .navbar-toggle .icon-bar {
+    background-color: #9d9d9d;
+}
+
+.navbar-inverse .navbar-toggle:hover .icon-bar {
+    background-color: #fff;
 }
 
 /* Links inside the dropdown */
@@ -164,15 +188,14 @@ a:active {
 
 .navbar {
   margin-bottom: 0px;
+  border-radius: 0px;
 }
-.navbar-collapse.collapse {
-  display: block!important;
-}
-
-.navbar-nav>li, .navbar-nav {
-  float: left !important;
+.navbar-brand {
+  font-size: 14px;
+  display: inline-block;
 }
 
-.navbar-right {
+/*.navbar-right {
   float: right!important;
 }
+*/
