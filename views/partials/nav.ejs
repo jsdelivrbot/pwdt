@@ -31,9 +31,11 @@
   </div>
 </nav>
 <script>
-  $(".nav").on("click", function(){
-    console.log("CLICKING");
-     $(".nav").find(".active").removeClass("active");
-     $(this).addClass("active");
-  });
+$(document).ready(function() {
+    $(document).on('click', '.nav > li > a', function (e) {
+        console.log("CLICKING");
+        console.log(this);
+        $(this).addClass('active').siblings().removeClass('active');
+    });
+});
 </script>
