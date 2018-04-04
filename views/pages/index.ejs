@@ -29,19 +29,19 @@
           <div class="radio-inline">
             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" ng-model="specificity.text" ng-init="specificity.text='identified'" value="identified" ng-click="updateChart(specificity.text)" checked>
             <span class="form-check-label">
-              Identified
+              Identifiable
             </span>
           </div>
           <div class="radio-inline">
             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" ng-model="specificity.text" value="quantified" ng-click="updateChart(specificity.text)">
             <span class="form-check-label">
-              Quantified
+              Quantifiable
             </span>
           </div>
           <div class="radio-inline">
             <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" ng-model="specificity.text" value="good_linearity" ng-click="updateChartLinearity(specificity.text)">
             <span class="form-check-label">
-              Linear Range (r<sup>2</sup> > 0.8)
+              Linearity (r<sup>2</sup> > 0.8)
             </span>
           </div>
           <button class="btn btn-danger pull-right" type="submit" ng-click="query()">Submit</button>
@@ -82,7 +82,7 @@
             <th scope="col">Gene Name</th>
             <th scope="col">Short Protein Name</th>
             <th scope="col">Protein Name</th>
-            <th scope="col">{{specificity.text=='good_linearity' ? 'Linear Range' : specificity.text.charAt(0).toUpperCase() + specificity.text.slice(1)}}</th>
+            <th scope="col">{{specificity.text=='good_linearity' ? 'Linearity (r\u00B2> 0.8)' : specificity.text.charAt(0).toUpperCase() + specificity.text.slice(1, 8) + 'able'}}</th>
             <th scope="col">Recommendation</th>
           </tr>
         </thread>
@@ -110,7 +110,7 @@
             <th scope="col">Gene Name</th>
             <th scope="col">Entry Name</th>
             <th scope="col">Protein Name</th>
-            <th scope="col">{{specificity.text=='good_linearity' ? 'Linear Range' : specificity.text.charAt(0).toUpperCase() + specificity.text.slice(1)}}</th>
+            <th scope="col">{{specificity.text=='good_linearity' ? 'Linearity (r\u00B2> 0.8)' : specificity.text.charAt(0).toUpperCase() + specificity.text.slice(1, 8) + 'able'}}</th>
             <th scope="col">Recommendation</th>
           </tr>
         </thread>
