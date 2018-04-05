@@ -242,7 +242,7 @@ var dataSource = new DevExpress.data.DataSource({
     type: 'array',
     key: 'sensitivity',
     data: [{
-        sensitivity: "Identified",
+        sensitivity: "Identifiable",
         undepleted: 171,
         u_query: 0,
         depleted: 301,
@@ -252,7 +252,7 @@ var dataSource = new DevExpress.data.DataSource({
         na: 0,
         na_query: 0
     }, {
-        sensitivity: "Quantified",
+        sensitivity: "Quantifiable",
         undepleted: 119,
         u_query: 0,
         depleted: 326,
@@ -262,7 +262,7 @@ var dataSource = new DevExpress.data.DataSource({
         na: 113,
         na_query: 0
     }, {
-        sensitivity: "Good Linearity",
+        sensitivity: "Linearity (r\u00B2>0.8)",
         undepleted: 113,
         u_query: 0,
         depleted: 320,
