@@ -79,7 +79,7 @@ app.controller('mainController', ($scope, $http) => {
     console.log('again');
     var proteinList = $scope.proteinData.text.toUpperCase();
     $scope.proteinData.text = '';
-    proteinList = proteinList.replace(new RegExp(', ', 'g'), ",").replace(/\s+/g, ',');
+    proteinList = proteinList.replace(/;\s+/g, ",").replace(/,\s+/g, ",").replace(/\s+/g, ',');
     $http.get('/api/v1/except/' + proteinList)
     .success((data) => {
       $scope.exceptData = data;
