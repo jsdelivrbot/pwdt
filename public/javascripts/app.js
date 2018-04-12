@@ -107,6 +107,10 @@ app.controller('mainController', ($scope, $http) => {
         if (protein.good_linearity == "#N/A") {
           $scope.querySpecificity.good_linearity["NA"].push(protein.swiss_prot_id);
         }
+        else if (protein.good_linearity == "Undepleted" || protein.good_linearity == "Depleted") {
+          $scope.querySpecificity.good_linearity[protein.good_linearity].push(protein.swiss_prot_id);
+          $scope.querySpecificity.broader_linear_range[protein.good_linearity].push(protein.swiss_prot_id);
+        }
         else {
           $scope.querySpecificity.good_linearity[protein.good_linearity].push(protein.swiss_prot_id);
         }
@@ -214,6 +218,7 @@ app.controller('mainController', ($scope, $http) => {
     dataSource.load();
   };
   $scope.updateChartLinearity = (specificity) => {
+    console.log(specificity + 'updating');
     if ($scope.querySpecificity[specificity] == undefined) {
       console.log('undefined');
       return;
@@ -227,10 +232,10 @@ app.controller('mainController', ($scope, $http) => {
     store.update('Linearity (r\u00B2>0.8)', { both : 155 - $scope.querySpecificity[specificity].Both.length});
     store.update('Linearity (r\u00B2>0.8)', { na_query : $scope.querySpecificity[specificity].NA.length});
     store.update('Linearity (r\u00B2>0.8)', { na : 169 - $scope.querySpecificity[specificity].NA.length});
-    store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length + $scope.querySpecificity[specificity].Undepleted.length});
-    store.update('Broader Linear Range', { undepleted : 146 - ($scope.querySpecificity.broader_linear_range.Undepleted.length + $scope.querySpecificity[specificity].Undepleted.length)});
-    store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length + $scope.querySpecificity[specificity].Depleted.length});
-    store.update('Broader Linear Range', { depleted : 370 - ($scope.querySpecificity.broader_linear_range.Depleted.length + $scope.querySpecificity[specificity].Depleted.length)});
+    store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length});
+    store.update('Broader Linear Range', { undepleted : 146 - $scope.querySpecificity.broader_linear_range.Undepleted.length});
+    store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length});
+    store.update('Broader Linear Range', { depleted : 370 - $scope.querySpecificity.broader_linear_range.Depleted.length});
     store.update('Broader Linear Range', { b_query : $scope.querySpecificity.broader_linear_range.Same.length});
     store.update('Broader Linear Range', { both : 72 - $scope.querySpecificity.broader_linear_range.Same.length});
     store.update('Identifiable', {undepleted: 171});
@@ -250,6 +255,8 @@ app.controller('mainController', ($scope, $http) => {
     store.update('Quantifiable', {na: 113});
     store.update('Quantifiable', {na_query: 0});
     dataSource.load();
+
+    console.log(store);
   }
 });
 
@@ -304,9 +311,9 @@ var dataSource = new DevExpress.data.DataSource({
 app.controller('chartController', ($scope, $http) => {
     $scope.tooltipInstance = {};
     $scope.specDict = {
-      'Identified': 'identified',
-      'Quantified': 'quantified',
-      'Good Linearity': 'good_linearity',
+      'Identifiable': 'identified',
+      'Quantifiable': 'quantified',
+      'Linearity (r\u00B2>0.8)': 'good_linearity',
       'Broader Linear Range': 'broader_linear_range'
     };
 
@@ -369,7 +376,16 @@ app.controller('chartController', ($scope, $http) => {
         tooltip: {
             enabled: true,
             customizeTooltip: function (arg) {
+              console.log('here');
+              console.log(arg);
+
               var specArg = $scope.specDict[arg.argumentText];
+
+              // if (arg.value == 0) {
+              //   return {
+              //     text: ''
+              //   }
+              // }
 
               if (arg.seriesName == "Undepleted: Query Proteins") {
                 return {
@@ -400,7 +416,8 @@ app.controller('chartController', ($scope, $http) => {
               }
               else {
                 return {
-                    text: arg.seriesName + ": " + arg.totalText
+                    //text: arg.seriesName + ": " + arg.totalText
+                    text: arg.seriesName + ": " + arg.value
                 };
               }
             },
