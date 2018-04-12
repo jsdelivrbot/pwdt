@@ -10,6 +10,12 @@ app.controller('mainController', ($scope, $http) => {
   $scope.querySpecificity = {};
   $scope.p = 5;
   $scope.results = {}
+  $scope.axisDict = {
+    'identified': 'Identifiable',
+    'quantified': 'Quantifiable',
+    'good_linearity': 'Linearity (r\u00B2>0.8)',
+    'broader_linear_range': 'Broader Linear Range'
+  };
 
   $scope.sort = function(keyname){
     $scope.sortKey = keyname;   //set the sortKey to the param passed
@@ -79,7 +85,7 @@ app.controller('mainController', ($scope, $http) => {
     console.log('again');
     var proteinList = $scope.proteinData.text.toUpperCase();
     $scope.proteinData.text = '';
-    proteinList = proteinList.replace(new RegExp(', ', 'g'), ",").replace(/\s+/g, ',');
+    proteinList = proteinList.replace(/;\s+/g, ",").replace(/,\s+/g, ",").replace(/\s+/g, ',');
     $http.get('/api/v1/except/' + proteinList)
     .success((data) => {
       $scope.exceptData = data;
@@ -140,6 +146,50 @@ app.controller('mainController', ($scope, $http) => {
     $scope.p = size;
   };
 
+  $scope.reset = (specificity, store) => {
+
+    if (specificity == 'Identifiable') {
+      store.update(specificity, {undepleted: 171});
+      store.update(specificity, {u_query: 0});
+      store.update(specificity, {depleted: 301});
+      store.update(specificity, {d_query: 0});
+      store.update(specificity, {both: 285});
+      store.update(specificity, {b_query: 0});
+      store.update(specificity, {na: 0});
+      store.update(specificity, {na_query: 0});
+    }
+    else if (specificity == 'Quantifiable') {
+      store.update(specificity, {undepleted: 119});
+      store.update(specificity, {u_query: 0});
+      store.update(specificity, {depleted: 326});
+      store.update(specificity, {d_query: 0});
+      store.update(specificity, {both: 199});
+      store.update(specificity, {b_query: 0});
+      store.update(specificity, {na: 113});
+      store.update(specificity, {na_query: 0});
+    }
+    else if (specificity == 'Linearity (r\u00B2>0.8)') {
+      store.update(specificity, { u_query : 0});
+      store.update(specificity, { undepleted : 113});
+      store.update(specificity, { d_query : 0});
+      store.update(specificity, { depleted : 320});
+      store.update(specificity, { b_query : 0});
+      store.update(specificity, { both : 155});
+      store.update(specificity, { na_query : 0});
+      store.update(specificity, { na : 169});
+    }
+    else if (specificity == 'Broader Linear Range') {
+      store.update(specificity, { u_query : 0});
+      store.update(specificity, { undepleted : 33});
+      store.update(specificity, { d_query : 0});
+      store.update(specificity, { depleted : 50});
+      store.update(specificity, { b_query :0});
+      store.update(specificity, { both : 72});
+    }
+
+    return store;
+  }
+
   $scope.updateChart = (specificity) => {
     if ($scope.querySpecificity[specificity] == undefined) {
       console.log('undefined');
@@ -148,27 +198,17 @@ app.controller('mainController', ($scope, $http) => {
     var spec = '';
     var store = dataSource.store();
     if (specificity == 'identified') {
-      spec = 'Identified';
-      store.update('Quantified', {undepleted: 119});
-      store.update('Quantified', {u_query: 0});
-      store.update('Quantified', {depleted: 326});
-      store.update('Quantified', {d_query: 0});
-      store.update('Quantified', {both: 199});
-      store.update('Quantified', {b_query: 0});
-      store.update('Quantified', {na: 113});
-      store.update('Quantified', {na_query: 0});
+      spec = $scope.axisDict[specificity];
+      store = $scope.reset('Quantifiable', store);
     }
     else if (specificity == 'quantified') {
-      spec = 'Quantified';
-      store.update('Identified', {undepleted: 171});
-      store.update('Identified', {u_query: 0});
-      store.update('Identified', {depleted: 301});
-      store.update('Identified', {d_query: 0});
-      store.update('Identified', {both: 285});
-      store.update('Identified', {b_query: 0});
-      store.update('Identified', {na: 0});
-      store.update('Identified', {na_query: 0});
+      spec = $scope.axisDict[specificity];
+      store = $scope.reset("Identifiable", store);
     }
+    store = $scope.reset("Linearity (r\u00B2>0.8)", store);
+    store = $scope.reset("Broader Linear Range", store);
+
+    console.log(spec);
     // var store = dataSource.store();
     store.byKey(spec).done(function (dataItem) {
       store.update(spec, { u_query : $scope.querySpecificity[specificity].Undepleted.length});
@@ -180,21 +220,7 @@ app.controller('mainController', ($scope, $http) => {
       store.update(spec, { na_query : $scope.querySpecificity[specificity].NA.length});
       store.update(spec, { na : dataItem.na - $scope.querySpecificity[specificity].NA.length});
     });
-
-    store.update('Good Linearity', { u_query : 0});
-    store.update('Good Linearity', { undepleted : 113});
-    store.update('Good Linearity', { d_query : 0});
-    store.update('Good Linearity', { depleted : 320});
-    store.update('Good Linearity', { b_query : 0});
-    store.update('Good Linearity', { both : 155});
-    store.update('Good Linearity', { na_query : 0});
-    store.update('Good Linearity', { na : 169});
-    store.update('Broader Linear Range', { u_query : 0});
-    store.update('Broader Linear Range', { undepleted : 33});
-    store.update('Broader Linear Range', { d_query : 0});
-    store.update('Broader Linear Range', { depleted : 50});
-    store.update('Broader Linear Range', { b_query :0});
-    store.update('Broader Linear Range', { both : 72});
+    
     dataSource.load();
   };
   $scope.updateChartLinearity = (specificity) => {
@@ -202,37 +228,31 @@ app.controller('mainController', ($scope, $http) => {
       console.log('undefined');
       return;
     }
+    spec = $scope.axisDict[specificity];
+
+    console.log('udate chart linearity');
+    console.log($scope.axisDict);
+    console.log($scope.querySpecificity.broader_linear_range.Same.length);
+
     var store = dataSource.store();
-    store.update('Good Linearity', { u_query : $scope.querySpecificity[specificity].Undepleted.length});
-    store.update('Good Linearity', { undepleted : 113 - $scope.querySpecificity[specificity].Undepleted.length});
-    store.update('Good Linearity', { d_query : $scope.querySpecificity[specificity].Depleted.length});
-    store.update('Good Linearity', { depleted : 320 - $scope.querySpecificity[specificity].Depleted.length});
-    store.update('Good Linearity', { b_query : $scope.querySpecificity[specificity].Both.length});
-    store.update('Good Linearity', { both : 155 - $scope.querySpecificity[specificity].Both.length});
-    store.update('Good Linearity', { na_query : $scope.querySpecificity[specificity].NA.length});
-    store.update('Good Linearity', { na : 169 - $scope.querySpecificity[specificity].NA.length});
-    store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length + $scope.querySpecificity[specificity].Undepleted.length});
+    store.update('Linearity (r\u00B2>0.8)', { u_query : $scope.querySpecificity[specificity].Undepleted.length});
+    store.update('Linearity (r\u00B2>0.8)', { undepleted : 113 - $scope.querySpecificity[specificity].Undepleted.length});
+    store.update('Linearity (r\u00B2>0.8)', { d_query : $scope.querySpecificity[specificity].Depleted.length});
+    store.update('Linearity (r\u00B2>0.8)', { depleted : 320 - $scope.querySpecificity[specificity].Depleted.length});
+    store.update('Linearity (r\u00B2>0.8)', { b_query : $scope.querySpecificity[specificity].Both.length});
+    store.update('Linearity (r\u00B2>0.8)', { both : 155 - $scope.querySpecificity[specificity].Both.length});
+    store.update('Linearity (r\u00B2>0.8)', { na_query : $scope.querySpecificity[specificity].NA.length});
+    store.update('Linearity (r\u00B2>0.8)', { na : 169 - $scope.querySpecificity[specificity].NA.length});
+    store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length});
+    //store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length + $scope.querySpecificity[specificity].Undepleted.length});
     store.update('Broader Linear Range', { undepleted : 33 - $scope.querySpecificity.broader_linear_range.Undepleted.length});
-    store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length + $scope.querySpecificity[specificity].Depleted.length});
-    store.update('Broader Linear Range', { depleted : 50 - $scope.querySpecificity.broader_linear_range.Depleted.length});
+    store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length});
+    //store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length + $scope.querySpecificity[specificity].Depleted.length});
+    store.update('Broader Linear Range', { depleted : 50- $scope.querySpecificity.broader_linear_range.Depleted.length});
     store.update('Broader Linear Range', { b_query : $scope.querySpecificity.broader_linear_range.Same.length});
     store.update('Broader Linear Range', { both : 72 - $scope.querySpecificity.broader_linear_range.Same.length});
-    store.update('Identified', {undepleted: 171});
-    store.update('Identified', {u_query: 0});
-    store.update('Identified', {depleted: 301});
-    store.update('Identified', {d_query: 0});
-    store.update('Identified', {both: 285});
-    store.update('Identified', {b_query: 0});
-    store.update('Identified', {na: 0});
-    store.update('Identified', {na_query: 0});
-    store.update('Quantified', {undepleted: 119});
-    store.update('Quantified', {u_query: 0});
-    store.update('Quantified', {depleted: 326});
-    store.update('Quantified', {d_query: 0});
-    store.update('Quantified', {both: 199});
-    store.update('Quantified', {b_query: 0});
-    store.update('Quantified', {na: 113});
-    store.update('Quantified', {na_query: 0});
+    store = $scope.reset('Identifiable', store);
+    store = $scope.reset('Quantifiable', store);
     dataSource.load();
   }
 });
@@ -273,9 +293,9 @@ var dataSource = new DevExpress.data.DataSource({
         na_query: 0
     }, {
         sensitivity: "Broader Linear Range",
-        undepleted: 33,
+        undepleted: 33, // 33 + 113
         u_query: 0,
-        depleted: 50,
+        depleted: 50, // 50 + 320
         d_query: 0,
         both: 72,
         b_query: 0
@@ -288,9 +308,9 @@ var dataSource = new DevExpress.data.DataSource({
 app.controller('chartController', ($scope, $http) => {
     $scope.tooltipInstance = {};
     $scope.specDict = {
-      'Identified': 'identified',
-      'Quantified': 'quantified',
-      'Good Linearity': 'good_linearity',
+      'Identifiable': 'identified',
+      'Quantifiable': 'quantified',
+      'Linearity (r\u00B2>0.8)': 'good_linearity',
       'Broader Linear Range': 'broader_linear_range'
     };
 
@@ -356,13 +376,25 @@ app.controller('chartController', ($scope, $http) => {
               var specArg = $scope.specDict[arg.argumentText];
 
               if (arg.seriesName == "Undepleted: Query Proteins") {
+                label = $scope.querySpecificity[specArg].Undepleted.toString().replace(new RegExp(',', 'g'), "\n") 
+                if (specArg == "broader_linear_range") {
+                  return {
+                    text: label + '\n' + $scope.querySpecificity.good_linearity.Undepleted.toString().replace(new RegExp(',', 'g'), "\n")
+                  };
+                }
                 return {
-                  text: $scope.querySpecificity[specArg].Undepleted.toString().replace(new RegExp(',', 'g'), "\n")
+                  text: label
                 };
               }
               else if (arg.seriesName == "Depleted: Query Proteins") {
+                label = $scope.querySpecificity[specArg].Depleted.toString().replace(new RegExp(',', 'g'), "\n")
+                if (specArg == "broader_linear_range") {
+                  return {
+                    text: label + '\n' + $scope.querySpecificity.good_linearity.Depleted.toString().replace(new RegExp(',', 'g'), "\n")
+                  };
+                }
                 return {
-                  text: $scope.querySpecificity[specArg].Depleted.toString().replace(new RegExp(',', 'g'), "\n")
+                  text: label
                 };
               }
               else if (arg.seriesName == "Both: Query Proteins") {
