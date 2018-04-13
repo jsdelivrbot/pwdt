@@ -4,7 +4,9 @@ var app = angular.module('pwdt', ['dx', 'angularUtils.directives.dirPagination']
 app.controller('mainController', ($scope, $http) => {
   $scope.formData = {};
   $scope.todoData = {};
-  $scope.proteinData = {};
+  $scope.proteinData = {
+    text: ''
+  };
   $scope.queryData = {};
   $scope.specificity = {};
   $scope.querySpecificity = {};
@@ -17,32 +19,6 @@ app.controller('mainController', ($scope, $http) => {
     'broader_linear_range': 'Broader Linear Range'
   };
 
-  $scope.sort = function(keyname){
-    $scope.sortKey = keyname;   //set the sortKey to the param passed
-    $scope.reverse = !$scope.reverse; //if true make it false and vice versa
-  };
-
-  // Get all todos
-  $http.get('/api/v1/todos')
-  .success((data) => {
-    $scope.todoData = data;
-    console.log(data);
-  })
-  .error((error) => {
-    console.log('Error: ' + error);
-  });
-  // Create a new todo
-  $scope.createTodo = () => {
-    $http.post('/api/v1/todos', $scope.formData)
-    .success((data) => {
-      $scope.formData = {};
-      $scope.todoData = data;
-      console.log(data);
-    })
-    .error((error) => {
-      console.log('Error: ' + error);
-    });
-  };
   // Query proteins
   $scope.query = () => {
     // reset values
@@ -78,18 +54,20 @@ app.controller('mainController', ($scope, $http) => {
       quantified: [],
       good_linearity: []
     }
-
-    console.log('query');
     var specificity = $scope.specificity.text;
-    console.log($scope.specificity.text);
-    console.log('again');
     var proteinList = $scope.proteinData.text.toUpperCase();
     $scope.proteinData.text = '';
     proteinList = proteinList.replace(/;\s+/g, ",").replace(/,\s+/g, ",").replace(/\s+/g, ',');
+    if (proteinList == '') {
+      $scope.exceptData = '';
+      $scope.queryData = '';
+      return;
+    }
+    // proteins not in DB
     $http.get('/api/v1/except/' + proteinList)
     .success((data) => {
       $scope.exceptData = data;
-      console.log(data);
+      console.log($scope.exceptData)
     })
     .error((error) => {
       console.log('Error: ' + error);
@@ -99,10 +77,13 @@ app.controller('mainController', ($scope, $http) => {
       $scope.queryData = data;
       console.log(data);
       data.map(function(protein) {
+
+        // parse results to display in table
         $scope.results.identified.push({"swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.identified=='#N/A'? 'N/A' : protein.identified, "recommendation": protein.identified=='Both'? 'Undepleted' : protein.identified=='#N/A'? 'Cannot be identified in either' : protein.identified});
         $scope.results.quantified.push({"swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.quantified=='#N/A'? 'N/A' : protein.quantified, "recommendation": protein.quantified=='Both'? 'Undepleted' : protein.quantified=='#N/A'? 'Cannot be quantified in either' : protein.quantified});
         $scope.results.good_linearity.push({"swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.good_linearity=='#N/A'? 'N/A' : protein.good_linearity, "recommendation":  protein.good_linearity=='#N/A'? 'Outside linear range' : protein.good_linearity!='Both'? protein.good_linearity : protein.broader_linear_range=='Same'? 'Undepleted' : protein.broader_linear_range});
 
+        // parse protein names queried by user
         $scope.querySpecificity.identified[protein.identified].push(protein.swiss_prot_id);
         if (protein.quantified == "#N/A") {
           $scope.querySpecificity.quantified["NA"].push(protein.swiss_prot_id);
@@ -116,14 +97,18 @@ app.controller('mainController', ($scope, $http) => {
         else {
           $scope.querySpecificity.good_linearity[protein.good_linearity].push(protein.swiss_prot_id);
         }
-        if (protein.broader_linear_range == "#N/A" || protein.broader_linear_range == "Inconclusive") {
+        if (protein.broader_linear_range == "#N/A") {
           $scope.querySpecificity.broader_linear_range["NA"].push(protein.swiss_prot_id);
+        }
+        else if (protein.broader_linear_range == "Same" || protein.broader_linear_range == "Inconclusive") {
+          $scope.querySpecificity.broader_linear_range["Same"].push(protein.swiss_prot_id);
         }
         else {
           $scope.querySpecificity.broader_linear_range[protein.broader_linear_range].push(protein.swiss_prot_id);
         }
       });
-      console.log($scope.querySpecificity);
+
+      //update chart based on query
       if (specificity == 'good_linearity') {
         $scope.updateChartLinearity(specificity);
       }
@@ -146,45 +131,45 @@ app.controller('mainController', ($scope, $http) => {
     $scope.p = size;
   };
 
+  // reset chart values
   $scope.reset = (specificity, store) => {
-
     if (specificity == 'Identifiable') {
-      store.update(specificity, {undepleted: 171});
+      store.update(specificity, {undepleted: 172});
       store.update(specificity, {u_query: 0});
-      store.update(specificity, {depleted: 301});
+      store.update(specificity, {depleted: 302});
       store.update(specificity, {d_query: 0});
-      store.update(specificity, {both: 285});
+      store.update(specificity, {both: 286});
       store.update(specificity, {b_query: 0});
       store.update(specificity, {na: 0});
       store.update(specificity, {na_query: 0});
     }
     else if (specificity == 'Quantifiable') {
-      store.update(specificity, {undepleted: 119});
+      store.update(specificity, {undepleted: 120});
       store.update(specificity, {u_query: 0});
-      store.update(specificity, {depleted: 326});
+      store.update(specificity, {depleted: 327});
       store.update(specificity, {d_query: 0});
-      store.update(specificity, {both: 199});
+      store.update(specificity, {both: 200});
       store.update(specificity, {b_query: 0});
-      store.update(specificity, {na: 113});
+      store.update(specificity, {na: 114});
       store.update(specificity, {na_query: 0});
     }
     else if (specificity == 'Linearity (r\u00B2>0.8)') {
       store.update(specificity, { u_query : 0});
-      store.update(specificity, { undepleted : 113});
+      store.update(specificity, { undepleted : 114});
       store.update(specificity, { d_query : 0});
-      store.update(specificity, { depleted : 320});
+      store.update(specificity, { depleted : 321});
       store.update(specificity, { b_query : 0});
-      store.update(specificity, { both : 155});
+      store.update(specificity, { both : 156});
       store.update(specificity, { na_query : 0});
-      store.update(specificity, { na : 169});
+      store.update(specificity, { na : 170});
     }
     else if (specificity == 'Broader Linear Range') {
       store.update(specificity, { u_query : 0});
-      store.update(specificity, { undepleted : 33});
+      store.update(specificity, { undepleted : 34});
       store.update(specificity, { d_query : 0});
-      store.update(specificity, { depleted : 50});
+      store.update(specificity, { depleted : 51});
       store.update(specificity, { b_query :0});
-      store.update(specificity, { both : 71});
+      store.update(specificity, { both : 73});
     }
 
     return store;
@@ -210,50 +195,54 @@ app.controller('mainController', ($scope, $http) => {
     store = $scope.reset("Linearity (r\u00B2>0.8)", store);
     store = $scope.reset("Broader Linear Range", store);
 
-    console.log(spec);
     // var store = dataSource.store();
     store.byKey(spec).done(function (dataItem) {
-      store.update(spec, { u_query : $scope.querySpecificity[specificity].Undepleted.length});
-      store.update(spec, { undepleted : dataItem.undepleted - $scope.querySpecificity[specificity].Undepleted.length});
-      store.update(spec, { d_query : $scope.querySpecificity[specificity].Depleted.length});
-      store.update(spec, { depleted : dataItem.depleted - $scope.querySpecificity[specificity].Depleted.length});
-      store.update(spec, { b_query : $scope.querySpecificity[specificity].Both.length});
-      store.update(spec, { both : dataItem.both - $scope.querySpecificity[specificity].Both.length});
-      store.update(spec, { na_query : $scope.querySpecificity[specificity].NA.length});
-      store.update(spec, { na : dataItem.na - $scope.querySpecificity[specificity].NA.length});
+      val = $scope.querySpecificity[specificity].Undepleted.length;
+      store.update(spec, { u_query : (val > 0 ? (val + 1) : 0)});
+      store.update(spec, { undepleted : dataItem.undepleted - (val > 0 ? (val + 1) : 0)});
+      val = $scope.querySpecificity[specificity].Depleted.length;
+      store.update(spec, { d_query : (val > 0 ? (val + 1) : 0)});
+      store.update(spec, { depleted : dataItem.depleted - (val > 0 ? (val + 1) : 0)});
+      val = $scope.querySpecificity[specificity].Both.length;
+      store.update(spec, { b_query : (val > 0 ? (val + 1) : 0)});
+      store.update(spec, { both : dataItem.both - (val > 0 ? (val + 1) : 0)});
+      val = $scope.querySpecificity[specificity].NA.length;
+      store.update(spec, { na_query : (val > 0 ? (val + 1) : 0)});
+      store.update(spec, { na : dataItem.na - (val > 0 ? (val + 1) : 0)});
     });
-    console.log(store);
     dataSource.load();
   };
   $scope.updateChartLinearity = (specificity) => {
-    console.log(specificity + 'updating');
     if ($scope.querySpecificity[specificity] == undefined) {
       console.log('undefined');
       return;
     }
     spec = $scope.axisDict[specificity];
 
-    console.log('udate chart linearity');
-    console.log($scope.axisDict);
-    console.log($scope.querySpecificity.broader_linear_range.Same.length);
-
     var store = dataSource.store();
-    store.update('Linearity (r\u00B2>0.8)', { u_query : $scope.querySpecificity[specificity].Undepleted.length});
-    store.update('Linearity (r\u00B2>0.8)', { undepleted : 113 - $scope.querySpecificity[specificity].Undepleted.length});
-    store.update('Linearity (r\u00B2>0.8)', { d_query : $scope.querySpecificity[specificity].Depleted.length});
-    store.update('Linearity (r\u00B2>0.8)', { depleted : 320 - $scope.querySpecificity[specificity].Depleted.length});
-    store.update('Linearity (r\u00B2>0.8)', { b_query : $scope.querySpecificity[specificity].Both.length});
-    store.update('Linearity (r\u00B2>0.8)', { both : 155 - $scope.querySpecificity[specificity].Both.length});
-    store.update('Linearity (r\u00B2>0.8)', { na_query : $scope.querySpecificity[specificity].NA.length});
-    store.update('Linearity (r\u00B2>0.8)', { na : 169 - $scope.querySpecificity[specificity].NA.length});
-    store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length});
+    val = $scope.querySpecificity[specificity].Undepleted.length;
+    store.update('Linearity (r\u00B2>0.8)', { u_query : (val > 0 ? (val + 1) : 0)});
+    store.update('Linearity (r\u00B2>0.8)', { undepleted : 114 - (val > 0 ? (val + 1) : 0)});
+    val = $scope.querySpecificity[specificity].Depleted.length;
+    store.update('Linearity (r\u00B2>0.8)', { d_query : (val > 0 ? (val + 1) : 0)});
+    store.update('Linearity (r\u00B2>0.8)', { depleted : 321 - (val > 0 ? (val + 1) : 0)});
+    val = $scope.querySpecificity[specificity].Both.length;
+    store.update('Linearity (r\u00B2>0.8)', { b_query : (val > 0 ? (val + 1) : 0)});
+    store.update('Linearity (r\u00B2>0.8)', { both : 156 - (val > 0 ? (val + 1) : 0)});
+    val = $scope.querySpecificity[specificity].NA.length 
+    store.update('Linearity (r\u00B2>0.8)', { na_query : (val > 0 ? (val + 1) : 0)});
+    store.update('Linearity (r\u00B2>0.8)', { na : 170 - (val > 0 ? (val + 1) : 0)});
+    val = $scope.querySpecificity.broader_linear_range.Undepleted.length;
+    store.update('Broader Linear Range', { u_query : (val > 0 ? (val + 1) : 0)});
     //store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length + $scope.querySpecificity[specificity].Undepleted.length});
-    store.update('Broader Linear Range', { undepleted : 33 - $scope.querySpecificity.broader_linear_range.Undepleted.length});
-    store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length});
+    store.update('Broader Linear Range', { undepleted : 34 - (val > 0 ? (val + 1) : 0)});
+    val = $scope.querySpecificity.broader_linear_range.Depleted.length;
+    store.update('Broader Linear Range', { d_query : (val > 0 ? (val + 1) : 0)});
     //store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length + $scope.querySpecificity[specificity].Depleted.length});
-    store.update('Broader Linear Range', { depleted : 50- $scope.querySpecificity.broader_linear_range.Depleted.length});
-    store.update('Broader Linear Range', { b_query : $scope.querySpecificity.broader_linear_range.Same.length});
-    store.update('Broader Linear Range', { both : 71 - $scope.querySpecificity.broader_linear_range.Same.length});
+    store.update('Broader Linear Range', { depleted : 51 - (val > 0 ? (val + 1) : 0)});
+    val = $scope.querySpecificity.broader_linear_range.Same.length;
+    store.update('Broader Linear Range', { b_query : (val > 0 ? (val + 1) : 0)});
+    store.update('Broader Linear Range', { both : 73 - (val > 0 ? (val + 1) : 0)});
     store = $scope.reset('Identifiable', store);
     store = $scope.reset('Quantifiable', store);
     dataSource.load();
@@ -266,44 +255,83 @@ var dataSource = new DevExpress.data.DataSource({
     key: 'sensitivity',
     data: [{
         sensitivity: "Identifiable",
-        undepleted: 171,
+        undepleted: 172,
         u_query: 0,
-        depleted: 301,
+        depleted: 302,
         d_query: 0,
-        both: 285,
+        both: 286,
         b_query: 0,
         na: 0,
         na_query: 0
     }, {
         sensitivity: "Quantifiable",
-        undepleted: 119,
+        undepleted: 120,
         u_query: 0,
-        depleted: 326,
+        depleted: 327,
         d_query: 0,
-        both: 199,
+        both: 200,
         b_query: 0,
-        na: 113,
+        na: 114,
         na_query: 0
     }, {
         sensitivity: "Linearity (r\u00B2>0.8)",
-        undepleted: 113,
+        undepleted: 114,
         u_query: 0,
-        depleted: 320,
+        depleted: 321,
         d_query: 0,
-        both: 155,
+        both: 156,
         b_query: 0,
-        na: 169,
+        na: 170,
         na_query: 0
     }, {
         sensitivity: "Broader Linear Range",
-        undepleted: 33, // 33 + 113
+        undepleted: 34, // 33 + 113
         u_query: 0,
-        depleted: 50, // 50 + 320
+        depleted: 51, // 50 + 320
         d_query: 0,
-        both: 71,
+        both: 73,
         b_query: 0
         // na: 602,
         //na_query: 0
+    //     sensitivity: "Identifiable",
+    //     undepleted: 171,
+    //     u_query: 0,
+    //     depleted: 301,
+    //     d_query: 0,
+    //     both: 285,
+    //     b_query: 0,
+    //     na: 0,
+    //     na_query: 0
+    // }, {
+    //     sensitivity: "Quantifiable",
+    //     undepleted: 119,
+    //     u_query: 0,
+    //     depleted: 326,
+    //     d_query: 0,
+    //     both: 199,
+    //     b_query: 0,
+    //     na: 113,
+    //     na_query: 0
+    // }, {
+    //     sensitivity: "Linearity (r\u00B2>0.8)",
+    //     undepleted: 113,
+    //     u_query: 0,
+    //     depleted: 320,
+    //     d_query: 0,
+    //     both: 155,
+    //     b_query: 0,
+    //     na: 169,
+    //     na_query: 0
+    // }, {
+    //     sensitivity: "Broader Linear Range",
+    //     undepleted: 33, // 33 + 113
+    //     u_query: 0,
+    //     depleted: 50, // 50 + 320
+    //     d_query: 0,
+    //     both: 72,
+    //     b_query: 0
+    //     // na: 602,
+    //     //na_query: 0
     }]
   }
 });
@@ -332,7 +360,13 @@ app.controller('chartController', ($scope, $http) => {
               backgroundColor: "rgba(100, 100, 100, 0.5);",
               // format: {type: 'percent', percentPrecision: 2},
               customizeText: function() {
-                return this.percent.toFixed(3) + "%";
+                if (this.value > 0) {
+                  var percent = (this.value -1)/(this.total-1); 
+                  return percent.toFixed(3) + "%";
+                }
+                else {
+                  return;
+                }
               }
             }
         },
@@ -378,11 +412,11 @@ app.controller('chartController', ($scope, $http) => {
             customizeTooltip: function (arg) {
               var specArg = $scope.specDict[arg.argumentText];
 
-              // if (arg.value == 0) {
-              //   return {
-              //     text: ''
-              //   }
-              // }
+              if (arg.value == 0) {
+                return {
+                  text: ''
+                }
+              }
 
               if (arg.seriesName == "Undepleted: Query Proteins") {
                 return {
@@ -413,7 +447,7 @@ app.controller('chartController', ($scope, $http) => {
               }
               else {
                 return {
-                    text: arg.seriesName + ": " + arg.totalText
+                    text: arg.seriesName + ": " + (arg.totalText - 1)
                     //text: arg.seriesName + ": " + arg.value
                 };
               }
