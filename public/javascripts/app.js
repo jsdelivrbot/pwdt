@@ -184,7 +184,7 @@ app.controller('mainController', ($scope, $http) => {
       store.update(specificity, { d_query : 0});
       store.update(specificity, { depleted : 50});
       store.update(specificity, { b_query :0});
-      store.update(specificity, { both : 72});
+      store.update(specificity, { both : 71});
     }
 
     return store;
@@ -200,9 +200,11 @@ app.controller('mainController', ($scope, $http) => {
     if (specificity == 'identified') {
       spec = $scope.axisDict[specificity];
       store = $scope.reset('Quantifiable', store);
+      store = $scope.reset("Identifiable", store);
     }
     else if (specificity == 'quantified') {
       spec = $scope.axisDict[specificity];
+      store = $scope.reset('Quantifiable', store);
       store = $scope.reset("Identifiable", store);
     }
     store = $scope.reset("Linearity (r\u00B2>0.8)", store);
@@ -220,7 +222,7 @@ app.controller('mainController', ($scope, $http) => {
       store.update(spec, { na_query : $scope.querySpecificity[specificity].NA.length});
       store.update(spec, { na : dataItem.na - $scope.querySpecificity[specificity].NA.length});
     });
-
+    console.log(store);
     dataSource.load();
   };
   $scope.updateChartLinearity = (specificity) => {
@@ -251,7 +253,7 @@ app.controller('mainController', ($scope, $http) => {
     //store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length + $scope.querySpecificity[specificity].Depleted.length});
     store.update('Broader Linear Range', { depleted : 50- $scope.querySpecificity.broader_linear_range.Depleted.length});
     store.update('Broader Linear Range', { b_query : $scope.querySpecificity.broader_linear_range.Same.length});
-    store.update('Broader Linear Range', { both : 72 - $scope.querySpecificity.broader_linear_range.Same.length});
+    store.update('Broader Linear Range', { both : 71 - $scope.querySpecificity.broader_linear_range.Same.length});
     store = $scope.reset('Identifiable', store);
     store = $scope.reset('Quantifiable', store);
     dataSource.load();
@@ -298,7 +300,7 @@ var dataSource = new DevExpress.data.DataSource({
         u_query: 0,
         depleted: 50, // 50 + 320
         d_query: 0,
-        both: 72,
+        both: 71,
         b_query: 0
         // na: 602,
         //na_query: 0
@@ -374,9 +376,6 @@ app.controller('chartController', ($scope, $http) => {
         tooltip: {
             enabled: true,
             customizeTooltip: function (arg) {
-              console.log('here');
-              console.log(arg);
-
               var specArg = $scope.specDict[arg.argumentText];
 
               // if (arg.value == 0) {
