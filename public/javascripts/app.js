@@ -10,6 +10,12 @@ app.controller('mainController', ($scope, $http) => {
   $scope.querySpecificity = {};
   $scope.p = 5;
   $scope.results = {}
+  $scope.axisDict = {
+    'identified': 'Identifiable',
+    'quantified': 'Quantifiable',
+    'good_linearity': 'Linearity (r\u00B2>0.8)',
+    'broader_linear_range': 'Broader Linear Range'
+  };
 
   $scope.sort = function(keyname){
     $scope.sortKey = keyname;   //set the sortKey to the param passed
@@ -107,10 +113,6 @@ app.controller('mainController', ($scope, $http) => {
         if (protein.good_linearity == "#N/A") {
           $scope.querySpecificity.good_linearity["NA"].push(protein.swiss_prot_id);
         }
-        // else if (protein.good_linearity == "Undepleted" || protein.good_linearity == "Depleted") {
-        //   $scope.querySpecificity.good_linearity[protein.good_linearity].push(protein.swiss_prot_id);
-        //   $scope.querySpecificity.broader_linear_range[protein.good_linearity].push(protein.swiss_prot_id);
-        // }
         else {
           $scope.querySpecificity.good_linearity[protein.good_linearity].push(protein.swiss_prot_id);
         }
@@ -144,6 +146,50 @@ app.controller('mainController', ($scope, $http) => {
     $scope.p = size;
   };
 
+  $scope.reset = (specificity, store) => {
+
+    if (specificity == 'Identifiable') {
+      store.update(specificity, {undepleted: 171});
+      store.update(specificity, {u_query: 0});
+      store.update(specificity, {depleted: 301});
+      store.update(specificity, {d_query: 0});
+      store.update(specificity, {both: 285});
+      store.update(specificity, {b_query: 0});
+      store.update(specificity, {na: 0});
+      store.update(specificity, {na_query: 0});
+    }
+    else if (specificity == 'Quantifiable') {
+      store.update(specificity, {undepleted: 119});
+      store.update(specificity, {u_query: 0});
+      store.update(specificity, {depleted: 326});
+      store.update(specificity, {d_query: 0});
+      store.update(specificity, {both: 199});
+      store.update(specificity, {b_query: 0});
+      store.update(specificity, {na: 113});
+      store.update(specificity, {na_query: 0});
+    }
+    else if (specificity == 'Linearity (r\u00B2>0.8)') {
+      store.update(specificity, { u_query : 0});
+      store.update(specificity, { undepleted : 113});
+      store.update(specificity, { d_query : 0});
+      store.update(specificity, { depleted : 320});
+      store.update(specificity, { b_query : 0});
+      store.update(specificity, { both : 155});
+      store.update(specificity, { na_query : 0});
+      store.update(specificity, { na : 169});
+    }
+    else if (specificity == 'Broader Linear Range') {
+      store.update(specificity, { u_query : 0});
+      store.update(specificity, { undepleted : 33});
+      store.update(specificity, { d_query : 0});
+      store.update(specificity, { depleted : 50});
+      store.update(specificity, { b_query :0});
+      store.update(specificity, { both : 71});
+    }
+
+    return store;
+  }
+
   $scope.updateChart = (specificity) => {
     if ($scope.querySpecificity[specificity] == undefined) {
       console.log('undefined');
@@ -152,69 +198,31 @@ app.controller('mainController', ($scope, $http) => {
     var spec = '';
     var store = dataSource.store();
     if (specificity == 'identified') {
-      spec = 'Identifiable';
-      store.update('Identifiable', {undepleted: 171 - $scope.querySpecificity[specificity].Undepleted.length});
-      //store.update('Identifiable', {u_query: 0});
-      store.update('Identifiable', {depleted: 301 - $scope.querySpecificity[specificity].Depleted.length});
-      //store.update('Identifiable', {d_query: 0});
-      store.update('Identifiable', {both: 285 - $scope.querySpecificity[specificity].Both.length});
-      //store.update('Identifiable', {b_query: 0});
-      store.update('Identifiable', {na: 0 - $scope.querySpecificity[specificity].NA.length});
-      //store.update('Identifiable', {na_query: 0});
-      store.update('Quantifiable', {undepleted: 119});
-      store.update('Quantifiable', {u_query: 0});
-      store.update('Quantifiable', {depleted: 326});
-      store.update('Quantifiable', {d_query: 0});
-      store.update('Quantifiable', {both: 199});
-      store.update('Quantifiable', {b_query: 0});
-      store.update('Quantifiable', {na: 113});
-      store.update('Quantifiable', {na_query: 0});
+      spec = $scope.axisDict[specificity];
+      store = $scope.reset('Quantifiable', store);
+      store = $scope.reset("Identifiable", store);
     }
     else if (specificity == 'quantified') {
-      spec = 'Quantifiable';
-      store.update('Quantifiable', {undepleted: 119 - $scope.querySpecificity[specificity].Undepleted.length});
-      //store.update('Quantifiable', {u_query: 0});
-      store.update('Quantifiable', {depleted: 326 - $scope.querySpecificity[specificity].Depleted.length});
-      //store.update('Quantifiable', {d_query: 0});
-      store.update('Quantifiable', {both: 199 - $scope.querySpecificity[specificity].Both.length});
-      //store.update('Quantifiable', {b_query: 0});
-      store.update('Quantifiable', {na: 113 - $scope.querySpecificity[specificity].NA.length});
-      //store.update('Quantifiable', {na_query: 0});
-      store.update('Identifiable', {undepleted: 171});
-      store.update('Identifiable', {u_query: 0});
-      store.update('Identifiable', {depleted: 301});
-      store.update('Identifiable', {d_query: 0});
-      store.update('Identifiable', {both: 285});
-      store.update('Identifiable', {b_query: 0});
-      store.update('Identifiable', {na: 0});
-      store.update('Identifiable', {na_query: 0});
+      spec = $scope.axisDict[specificity];
+      store = $scope.reset('Quantifiable', store);
+      store = $scope.reset("Identifiable", store);
     }
+    store = $scope.reset("Linearity (r\u00B2>0.8)", store);
+    store = $scope.reset("Broader Linear Range", store);
+
+    console.log(spec);
     // var store = dataSource.store();
     store.byKey(spec).done(function (dataItem) {
       store.update(spec, { u_query : $scope.querySpecificity[specificity].Undepleted.length});
-      //store.update(spec, { undepleted : dataItem.undepleted - $scope.querySpecificity[specificity].Undepleted.length});
+      store.update(spec, { undepleted : dataItem.undepleted - $scope.querySpecificity[specificity].Undepleted.length});
       store.update(spec, { d_query : $scope.querySpecificity[specificity].Depleted.length});
-      //store.update(spec, { depleted : dataItem.depleted - $scope.querySpecificity[specificity].Depleted.length});
+      store.update(spec, { depleted : dataItem.depleted - $scope.querySpecificity[specificity].Depleted.length});
       store.update(spec, { b_query : $scope.querySpecificity[specificity].Both.length});
-      //store.update(spec, { both : dataItem.both - $scope.querySpecificity[specificity].Both.length});
+      store.update(spec, { both : dataItem.both - $scope.querySpecificity[specificity].Both.length});
       store.update(spec, { na_query : $scope.querySpecificity[specificity].NA.length});
-      //store.update(spec, { na : dataItem.na - $scope.querySpecificity[specificity].NA.length});
+      store.update(spec, { na : dataItem.na - $scope.querySpecificity[specificity].NA.length});
     });
-
-    store.update('Linearity (r\u00B2>0.8)', { u_query : 0});
-    store.update('Linearity (r\u00B2>0.8)', { undepleted : 113});
-    store.update('Linearity (r\u00B2>0.8)', { d_query : 0});
-    store.update('Linearity (r\u00B2>0.8)', { depleted : 320});
-    store.update('Linearity (r\u00B2>0.8)', { b_query : 0});
-    store.update('Linearity (r\u00B2>0.8)', { both : 155});
-    store.update('Linearity (r\u00B2>0.8)', { na_query : 0});
-    store.update('Linearity (r\u00B2>0.8)', { na : 169});
-    store.update('Broader Linear Range', { u_query : 0});
-    store.update('Broader Linear Range', { undepleted : 146});
-    store.update('Broader Linear Range', { d_query : 0});
-    store.update('Broader Linear Range', { depleted : 370});
-    store.update('Broader Linear Range', { b_query :0});
-    store.update('Broader Linear Range', { both : 72});
+    console.log(store);
     dataSource.load();
   };
   $scope.updateChartLinearity = (specificity) => {
@@ -223,6 +231,12 @@ app.controller('mainController', ($scope, $http) => {
       console.log('undefined');
       return;
     }
+    spec = $scope.axisDict[specificity];
+
+    console.log('udate chart linearity');
+    console.log($scope.axisDict);
+    console.log($scope.querySpecificity.broader_linear_range.Same.length);
+
     var store = dataSource.store();
     store.update('Linearity (r\u00B2>0.8)', { u_query : $scope.querySpecificity[specificity].Undepleted.length});
     store.update('Linearity (r\u00B2>0.8)', { undepleted : 113 - $scope.querySpecificity[specificity].Undepleted.length});
@@ -232,31 +246,17 @@ app.controller('mainController', ($scope, $http) => {
     store.update('Linearity (r\u00B2>0.8)', { both : 155 - $scope.querySpecificity[specificity].Both.length});
     store.update('Linearity (r\u00B2>0.8)', { na_query : $scope.querySpecificity[specificity].NA.length});
     store.update('Linearity (r\u00B2>0.8)', { na : 169 - $scope.querySpecificity[specificity].NA.length});
-    store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length + $scope.querySpecificity[specificity].Undepleted.length});
-    store.update('Broader Linear Range', { undepleted : 146 - ($scope.querySpecificity.broader_linear_range.Undepleted.length + $scope.querySpecificity[specificity].Undepleted.length)});
-    store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length + $scope.querySpecificity[specificity].Depleted.length});
-    store.update('Broader Linear Range', { depleted : 370 - ($scope.querySpecificity.broader_linear_range.Depleted.length + $scope.querySpecificity[specificity].Depleted.length)});
+    store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length});
+    //store.update('Broader Linear Range', { u_query : $scope.querySpecificity.broader_linear_range.Undepleted.length + $scope.querySpecificity[specificity].Undepleted.length});
+    store.update('Broader Linear Range', { undepleted : 33 - $scope.querySpecificity.broader_linear_range.Undepleted.length});
+    store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length});
+    //store.update('Broader Linear Range', { d_query : $scope.querySpecificity.broader_linear_range.Depleted.length + $scope.querySpecificity[specificity].Depleted.length});
+    store.update('Broader Linear Range', { depleted : 50- $scope.querySpecificity.broader_linear_range.Depleted.length});
     store.update('Broader Linear Range', { b_query : $scope.querySpecificity.broader_linear_range.Same.length});
-    store.update('Broader Linear Range', { both : 72 - $scope.querySpecificity.broader_linear_range.Same.length});
-    store.update('Identifiable', {undepleted: 171});
-    store.update('Identifiable', {u_query: 0});
-    store.update('Identifiable', {depleted: 301});
-    store.update('Identifiable', {d_query: 0});
-    store.update('Identifiable', {both: 285});
-    store.update('Identifiable', {b_query: 0});
-    store.update('Identifiable', {na: 0});
-    store.update('Identifiable', {na_query: 0});
-    store.update('Quantifiable', {undepleted: 119});
-    store.update('Quantifiable', {u_query: 0});
-    store.update('Quantifiable', {depleted: 326});
-    store.update('Quantifiable', {d_query: 0});
-    store.update('Quantifiable', {both: 199});
-    store.update('Quantifiable', {b_query: 0});
-    store.update('Quantifiable', {na: 113});
-    store.update('Quantifiable', {na_query: 0});
+    store.update('Broader Linear Range', { both : 71 - $scope.querySpecificity.broader_linear_range.Same.length});
+    store = $scope.reset('Identifiable', store);
+    store = $scope.reset('Quantifiable', store);
     dataSource.load();
-
-    console.log(store);
   }
 });
 
@@ -296,11 +296,11 @@ var dataSource = new DevExpress.data.DataSource({
         na_query: 0
     }, {
         sensitivity: "Broader Linear Range",
-        undepleted: 146, // 33 + 113
+        undepleted: 33, // 33 + 113
         u_query: 0,
-        depleted: 370, // 50 + 320
+        depleted: 50, // 50 + 320
         d_query: 0,
-        both: 72,
+        both: 71,
         b_query: 0
         // na: 602,
         //na_query: 0
@@ -376,9 +376,6 @@ app.controller('chartController', ($scope, $http) => {
         tooltip: {
             enabled: true,
             customizeTooltip: function (arg) {
-              console.log('here');
-              console.log(arg);
-
               var specArg = $scope.specDict[arg.argumentText];
 
               // if (arg.value == 0) {
