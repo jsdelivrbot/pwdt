@@ -361,8 +361,8 @@ app.controller('chartController', ($scope, $http) => {
               // format: {type: 'percent', percentPrecision: 2},
               customizeText: function() {
                 if (this.value > 0) {
-                  var percent = (this.value -1)/(this.total-1); 
-                  return percent.toFixed(3) + "%";
+                  var percent = ((this.value -1)/(this.total-1))*100; 
+                  return percent.toFixed(0) + "%";
                 }
                 else {
                   return;
