@@ -7,7 +7,10 @@ app.controller('mainController', ($scope, $http) => {
   $scope.proteinData = {
     text: ''
   };
-  $scope.queryData = {};
+  $scope.queryData = [];
+  console.log('querydata');
+  console.log($scope.queryData);
+  console.log($scope.queryData.length);
   $scope.specificity = {};
   $scope.querySpecificity = {};
   $scope.p = 5;
@@ -362,7 +365,10 @@ app.controller('chartController', ($scope, $http) => {
               customizeText: function() {
                 if (this.value > 0) {
                   var percent = ((this.value -1)/(this.total-1))*100; 
-                  return percent.toFixed(0) + "%";
+                  if (percent == 100) {
+                    return percent.toFixed(0) + "%";
+                  }
+                  return percent.toFixed(1) + "%";
                 }
                 else {
                   return;

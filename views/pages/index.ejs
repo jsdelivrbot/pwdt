@@ -48,6 +48,15 @@
         </form>
       </div>
       <br>
+      <div ng-show="queryData.length == 0">
+        <h3>Getting Started</h3>
+        <p> 1. Enter the <strong>Uniprot ID</strong> or <strong>Gene Name</strong> of the proteins of interest into the form field, separated by a space, new line, comma, or semicolon <br>
+          &emsp;&emsp;- For example: Q53GG5, GSTP1 <br>
+          2. Select the <strong>Analytical Requirement</strong> for the protein analysis <br>
+          3. Click the <strong>Submit</strong> button <br>
+          4. The results of the proteins of interest are overlayed on the <strong>Plasma Workflow Distribution</strong> chart <p>
+        <p> For more information, please navigate to the <a href="/help"><strong>Help</strong></a> page </p>
+      </div>
       <div class="list">
         <label class="ng-cloak" ng-show="exceptData.length > 0">Proteins not in database: </label>
         <label class="ng-cloak" ng-show="exceptData.length > 0" ng-repeat="except in exceptData">&nbsp;{{ except.unnest }}{{$last ? '' : ','}}</lable>
