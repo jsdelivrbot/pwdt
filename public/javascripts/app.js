@@ -60,7 +60,7 @@ app.controller('mainController', ($scope, $http) => {
     var specificity = $scope.specificity.text;
     var proteinList = $scope.proteinData.text.toUpperCase();
     $scope.proteinData.text = '';
-    proteinList = proteinList.replace(/;\s+/g, ",").replace(/,\s+/g, ",").replace(/\s+/g, ',');
+    proteinList = proteinList.replace(/;\s+/g, ",").replace(/,\s+/g, ",").replace(/\s+/g, ',').replace(/,+/g, ',');
     if (proteinList == '') {
       $scope.exceptData = '';
       $scope.queryData = '';
