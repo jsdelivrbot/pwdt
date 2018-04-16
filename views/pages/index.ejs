@@ -48,6 +48,15 @@
         </form>
       </div>
       <br>
+      <div ng-show="queryData.length == 0">
+        <h3>Getting Started</h3>
+        <p> 1. Enter the <strong>Uniprot ID</strong> or <strong>Gene Name</strong> of the proteins of interest into the form field, separated by a space, new line, comma, or semicolon <br>
+          &emsp;&emsp;- For example: Q53GG5, GSTP1 <br>
+          2. Select the <strong>Analytical Requirement</strong> for the protein analysis <br>
+          3. Click the <strong>Submit</strong> button <br>
+          4. The results of the proteins of interest are overlayed on the <strong>Plasma Workflow Distribution</strong> chart, which is a static view of the database<p>
+        <p> For more information, please navigate to the <a href="/help"><strong>Help</strong></a> page </p>
+      </div>
       <div class="list">
         <label class="ng-cloak" ng-show="exceptData.length > 0">Proteins not in database: </label>
         <label class="ng-cloak" ng-show="exceptData.length > 0" ng-repeat="except in exceptData">&nbsp;{{ except.unnest }}{{$last ? '' : ','}}</lable>
@@ -103,7 +112,7 @@
       </div>
 
       <!-- Hidden table to be exported -->
-<!--       <table hidden id="export" class="table table-bordered table-striped">
+      <table hidden id="export" class="table table-bordered table-striped">
         <thread>
           <tr>
             <th scope="col">Uniprot ID</th>
@@ -124,7 +133,7 @@
             <td>&nbsp;{{ query.recommendation }}</td>
           </tr>
         </tbody>
-      </table> -->
+      </table>
 
 <!--       <table class="table table-bordered table-striped">
         <thread>
@@ -157,10 +166,48 @@
       <div class="demo-container" ng-app="pwdt" ng-controller="chartController">
         <div id="chart" dx-chart="chartOptions"></div>
       </div>
+      <br>
+      <p>The Plasma Workflow Distribution stacked bar chart displays the proportion of query proteins overlayed against the total proteins in our database for each analytical requirement.
+
+
+      <a id="more-info" data-toggle="collapse" class="toggle-icon pull-right" href="#collapse-panel" aria-expanded="false">
+          <!-- <span class="glyphicon glyphicon-knight"></span>
+          Drop Down Title -->
+          <span class="icon-toggle glyphicon glyphicon-triangle-bottom"></span>
+      </a></p>
+      <div class="collapse" id="collapse-panel">
+
+        <p>
+          &emsp;&emsp;- <strong>Undepleted</strong>: The protein is seen only when the sample is undepleted<br>
+          &emsp;&emsp;- <strong>Depleted</strong>: The protein is seen only when the sample is depleted<br>
+          &emsp;&emsp;- <strong>Both</strong>: The protein can be seen in both undepleted and depleted samples<br>
+          &emsp;&emsp;- <strong>N/A</strong>: The protein cannot be seen in either undepleted nor depleted samples</p>
+        <p>
+          Proteins with good linear range in both undepleted and depleted samples are further compared to determine which sample preparation has a broader linear range. The results are displayed in the Broader Linear Range group to provide a more accurate recommendation.
+        </p>
+      </div>
+
+
+<!--       <p>
+        &emsp;&emsp;- <strong>Undepleted</strong>: The protein is seen only when the sample is undepleted<br>
+        &emsp;&emsp;- <strong>Depleted</strong>: The protein is seen only when the sample is depleted<br>
+        &emsp;&emsp;- <strong>Both</strong>: The protein can be seen in both undepleted and depleted samples<br>
+        &emsp;&emsp;- <strong>N/A</strong>: The protein cannot be seen in either undepleted nor depleted samples</p>
+      <p>
+        Proteins with good linear range in both undepleted and depleted samples are further compared to determine which sample preparation has a broader linear range. The results are displayed in the Broader Linear Range group to provide a more accurate recommendation.
+      </p> -->
     </div>
   </div>
 </div>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="javascripts/app.js"></script>
+<script>$('.toggle-icon').click(function(){
+var IconToToggle = $(this).find('.icon-toggle');
+if (IconToToggle.hasClass('glyphicon-triangle-bottom')) {
+IconToToggle.removeClass('glyphicon-triangle-bottom').addClass('glyphicon-triangle-top');
+} else {
+IconToToggle.removeClass('glyphicon-triangle-top').addClass('glyphicon-triangle-bottom');
+}
+})</script>
 </body>
 </html>

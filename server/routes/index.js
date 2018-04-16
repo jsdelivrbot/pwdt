@@ -9,9 +9,9 @@ router.get('/', (req, res, next) => {
     __dirname, '..', '..', 'views', 'pages', 'index.ejs'));
 });
 
-router.get('/contact', (req, res, next) => {
+router.get('/help', (req, res, next) => {
   res.render(path.join(
-    __dirname, '..', '..', 'views', 'pages', 'contactUs.ejs'));
+    __dirname, '..', '..', 'views', 'pages', 'help.ejs'));
 });
 
 router.get('/about', (req, res, next) => {
