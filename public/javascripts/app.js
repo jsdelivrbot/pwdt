@@ -311,11 +311,11 @@ app.controller('chartController', ($scope, $http) => {
             type: "stackedBar", 
             ignoreEmptyPoints: true,
             label: {
+              resolveLabelOverlapping: 'stack',
               showForZeroValues: false,
               position: 'outside',
               font: {
-                color: '#000000',
-                width: 2
+                color: '#000000'
               },
               backgroundColor: "rgba(100, 100, 100, 0.5);",
               // format: {type: 'percent', percentPrecision: 2},
@@ -332,9 +332,6 @@ app.controller('chartController', ($scope, $http) => {
                 }
               }
             }
-        },
-        bindingOptions: { 
-            "resolveLabelOverlapping": "currentType"
         },
         series: [
             { valueField: "undepleted", name: "Undepleted", stack: "Undepleted", color: "#EF9A9A"},
