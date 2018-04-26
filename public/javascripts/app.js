@@ -315,7 +315,8 @@ app.controller('chartController', ($scope, $http) => {
               showForZeroValues: false,
               position: 'outside',
               font: {
-                color: '#000000'
+                color: '#000000',
+                size: 11
               },
               backgroundColor: "rgba(100, 100, 100, 0.5);",
               // format: {type: 'percent', percentPrecision: 2},
