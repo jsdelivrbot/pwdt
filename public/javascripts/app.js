@@ -8,9 +8,6 @@ app.controller('mainController', ($scope, $http) => {
     text: ''
   };
   $scope.queryData = [];
-  console.log('querydata');
-  console.log($scope.queryData);
-  console.log($scope.queryData.length);
   $scope.specificity = {};
   $scope.querySpecificity = {};
   $scope.p = 5;
@@ -294,47 +291,6 @@ var dataSource = new DevExpress.data.DataSource({
         d_query: 0,
         both: 73,
         b_query: 0
-        // na: 602,
-        //na_query: 0
-    //     sensitivity: "Identifiable",
-    //     undepleted: 171,
-    //     u_query: 0,
-    //     depleted: 301,
-    //     d_query: 0,
-    //     both: 285,
-    //     b_query: 0,
-    //     na: 0,
-    //     na_query: 0
-    // }, {
-    //     sensitivity: "Quantifiable",
-    //     undepleted: 119,
-    //     u_query: 0,
-    //     depleted: 326,
-    //     d_query: 0,
-    //     both: 199,
-    //     b_query: 0,
-    //     na: 113,
-    //     na_query: 0
-    // }, {
-    //     sensitivity: "Linearity (r\u00B2>0.8)",
-    //     undepleted: 113,
-    //     u_query: 0,
-    //     depleted: 320,
-    //     d_query: 0,
-    //     both: 155,
-    //     b_query: 0,
-    //     na: 169,
-    //     na_query: 0
-    // }, {
-    //     sensitivity: "Broader Linear Range",
-    //     undepleted: 33, // 33 + 113
-    //     u_query: 0,
-    //     depleted: 50, // 50 + 320
-    //     d_query: 0,
-    //     both: 72,
-    //     b_query: 0
-    //     // na: 602,
-    //     //na_query: 0
     }]
   }
 });
@@ -358,7 +314,8 @@ app.controller('chartController', ($scope, $http) => {
               showForZeroValues: false,
               position: 'outside',
               font: {
-                color: '#000000'
+                color: '#000000',
+                width: 2
               },
               backgroundColor: "rgba(100, 100, 100, 0.5);",
               // format: {type: 'percent', percentPrecision: 2},
@@ -375,6 +332,9 @@ app.controller('chartController', ($scope, $http) => {
                 }
               }
             }
+        },
+        bindingOptions: { 
+            "resolveLabelOverlapping": "currentType"
         },
         series: [
             { valueField: "undepleted", name: "Undepleted", stack: "Undepleted", color: "#EF9A9A"},
