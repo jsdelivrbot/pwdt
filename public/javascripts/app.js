@@ -1,5 +1,6 @@
 // var chart = angular.module('chart', ['dx']);
-var app = angular.module('pwdt', ['dx', 'angularUtils.directives.dirPagination']);
+//const path = require('path');
+var app = angular.module('pwdt', ['dx', 'angularUtils.directives.dirPagination', 'ngSanitize']);
 
 app.factory('spec', function(){
   return {
@@ -9,17 +10,59 @@ app.factory('spec', function(){
   };
 });
 
+app.directive('tooltip', function(){
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs){
+            element.hover(function(){
+                // on mouseenter
+                element.tooltip('show');
+            }, function(){
+                // on mouseleave
+                element.tooltip('hide');
+            });
+        }
+    };
+});
+
 app.controller('mainController', ($scope, $http, spec) => {
+  if (window.performance) {
+    console.info("window.performance works fine on this browser");
+  }
+    if (performance.navigation.type == 1) {
+      console.info( "This page is reloaded" );
+      sessionStorage.clear()
+    } else {
+      console.info( "This page is not reloaded");
+    }
+
   $scope.formData = {};
   $scope.todoData = {};
   $scope.proteinData = {
     text: ''
   };
+  console.log(sessionStorage)
   $scope.queryData = [];
+  if (sessionStorage.getItem('queryData') != null) {
+    $scope.queryData = JSON.parse(sessionStorage.getItem('queryData'))
+  }
+
   $scope.specificity = spec.specificity;
+  if (sessionStorage.getItem('specificity') != null) {
+    $scope.specificity = JSON.parse(sessionStorage.getItem('specificity'))
+  }
+
   $scope.querySpecificity = {};
+  if (sessionStorage.getItem('querySpecificity') != null) {
+     $scope.querySpecificity = JSON.parse(sessionStorage.getItem('querySpecificity'))
+  }
   $scope.p = 5;
   $scope.results = {}
+  
+  if (sessionStorage.getItem('results') != null) {
+    $scope.results = JSON.parse(sessionStorage.getItem('results'))
+  }
+
   $scope.axisDict = {
     'identified': 'Identifiable',
     'quantified': 'Quantifiable',
@@ -27,7 +70,7 @@ app.controller('mainController', ($scope, $http, spec) => {
     //'broader_linear_range': 'Broader Linear Range'
     'recommendation': 'Recommendation'
   };
-
+  $scope.currProtein = {text: 'test'};
   // Query proteins
   $scope.query = () => {
     // reset values
@@ -63,9 +106,13 @@ app.controller('mainController', ($scope, $http, spec) => {
       quantified: [],
       good_linearity: []
     }
+
     var specificity = $scope.specificity.text;
+    sessionStorage.setItem('specificity', JSON.stringify($scope.specificity))
+
     var proteinList = $scope.proteinData.text.toUpperCase();
     $scope.proteinData.text = '';
+    $scope.currProtein = null;
     proteinList = proteinList.replace(/;\s+/g, ",").replace(/,\s+/g, ",").replace(/\s+/g, ',').replace(/,+/g, ',');
     if (proteinList == '') {
       $scope.exceptData = '';
@@ -85,12 +132,18 @@ app.controller('mainController', ($scope, $http, spec) => {
     .success((data) => {
       $scope.queryData = data;
       console.log(data);
+      sessionStorage.setItem('queryData', JSON.stringify($scope.queryData))
+
+      idx = 0
       data.map(function(protein) {
 
         // parse results to display in table
-        $scope.results.identified.push({"swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.identified=='#N/A'? 'N/A' : protein.identified, "recommendation": protein.identified=='Both'? 'Undepleted' : protein.identified=='#N/A'? 'Cannot be identified in either' : protein.identified});
-        $scope.results.quantified.push({"swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.quantified=='#N/A'? 'N/A' : protein.quantified, "recommendation": protein.quantified=='Both'? 'Undepleted' : protein.quantified=='#N/A'? 'Cannot be quantified in either' : protein.quantified});
-        $scope.results.good_linearity.push({"swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.good_linearity=='#N/A'? 'N/A' : protein.good_linearity, "recommendation":  protein.good_linearity=='#N/A'? 'Outside linear range' : protein.good_linearity!='Both'? protein.good_linearity : protein.broader_linear_range=='Same'? 'Undepleted' : protein.broader_linear_range});
+        $scope.results.identified.push({"idx": idx, "swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.identified=='#N/A'? 'N/A' : protein.identified, "recommendation": protein.identified=='Both'? 'Undepleted' : protein.identified=='#N/A'? 'Cannot be identified in either' : protein.identified});
+        $scope.results.quantified.push({"idx": idx, "swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.quantified=='#N/A'? 'N/A' : protein.quantified, "recommendation": protein.quantified=='Both'? 'Undepleted' : protein.quantified=='#N/A'? 'Cannot be quantified in either' : protein.quantified});
+        $scope.results.good_linearity.push({"idx": idx, "swiss_prot_id": protein.swiss_prot_id, "gene_name": protein.gene_name, "entry_name": protein.entry_name, "protein_name": protein.protein_name, "specificity": protein.good_linearity=='#N/A'? 'N/A' : protein.good_linearity, "recommendation":  protein.good_linearity=='#N/A'? 'Outside linear range' : protein.good_linearity!='Both'? protein.good_linearity : protein.broader_linear_range=='Same'? 'Undepleted' : protein.broader_linear_range});
+        idx += 1;
+
+        sessionStorage.setItem('results', JSON.stringify($scope.results))
 
         // parse protein names queried by user
         $scope.querySpecificity.identified[protein.identified].push(protein.swiss_prot_id);
@@ -117,6 +170,8 @@ app.controller('mainController', ($scope, $http, spec) => {
         }
       });
 
+      sessionStorage.setItem('querySpecificity', JSON.stringify($scope.querySpecificity))
+
       //update chart based on query
       // if (specificity == 'good_linearity') {
       //   $scope.updateChartLinearity(specificity);
@@ -129,6 +184,94 @@ app.controller('mainController', ($scope, $http, spec) => {
       console.log('Error: ' + error);
     });
   };
+
+  $scope.peptide = (idx) => {
+    $scope.currProtein = $scope.queryData[idx];
+    $scope.currProtein.format = $scope.format_sequence($scope.currProtein.sequence);
+    sessionStorage.setItem('currProtein', JSON.stringify($scope.currProtein))
+    //event.preventDefault();
+    protein = $scope.currProtein.swiss_prot_id;
+    var tooltips = {};
+    $http.get('/api/v1/peptide/' + protein)
+    //console.log('here')
+    .success((data) => {
+      console.log(data)
+      data.map(function(peptide) {
+        idx = $scope.currProtein.sequence.indexOf(peptide.peptide);
+        if (idx in tooltips) {
+          tooltips[idx].push([peptide.peptide, peptide.modified_peptide]);
+        }
+        else {
+          tooltips[idx] = [[peptide.peptide, peptide.modified_peptide]];
+        }
+      });
+
+      $scope.currProtein.formatted = addTooltips($scope.currProtein.sequence, tooltips)
+
+      console.log(tooltips);
+      console.log($scope.currProtein)
+    })
+    .error((error) => {
+      console.log('Error: ' + error);
+    });
+  };
+
+  $scope.format_sequence = (sequence) => {
+    var start_pos = 0;
+    var end_pos = 0;
+    seq = []
+    for (i = 10; i < sequence.length; i += 10) {
+      end_pos = i;
+      seq.push([sequence.slice(start_pos, end_pos)]);
+      start_pos = end_pos;
+    }
+    seq.push([sequence.slice(end_pos)]);
+    return seq.join(' &emsp; ');
+  };
+
+  function addTooltips(str, tooltips) {
+
+    var char_arr = str.split('');
+    var tooltips_list = []
+    var formatted_str = ''
+
+    for (i=0; i < str.length; i++) {
+      if (i in tooltips) {
+        for (j=0; j<tooltips[i].length; j++) {
+          tooltips_list.push([i, i + tooltips[i][j][0].length, tooltips[i][j][1]]);
+        }
+      }
+      tooltips_list = remove(tooltips_list, i);
+      if (tooltips_list.length > 0) {
+        formatted_str += format_tooltip(char_arr[i], tooltips_list)
+      }
+      else {
+        formatted_str += char_arr[i]
+      }
+      if ((i+1)%10 == 0) {
+        formatted_str += '&emsp;'
+      }
+    }
+
+    function format_tooltip(str, tooltip) {
+      //<a href="#0" title="My Tooltip!" data-toggle="tooltip" data-placement="top" tooltip>
+      return '<a href="#0" title="' + tooltips_list.join('\u000A') + '" data-toggle="tooltip" data-placement="top" tooltip>' + str + '</a>';
+      //return '<span class="tooltip" data-tooltip="' + tooltips_list.join('\u000A') + '">' + str + '</span>';
+    }
+
+    function remove(array, element) {
+      return array.filter(e => e[1] !== element);
+    }
+
+    return formatted_str;
+
+  }
+
+
+  $scope.updateProtein = (gene) => {
+    $scope.currProtein.text = gene;
+    console.log($scope.currProtein.text)
+  }
 
   $scope.export = function() {
     jQuery(function ($) {
@@ -343,6 +486,10 @@ var dataSource = new DevExpress.data.DataSource({
 
 app.controller('chartController', ($scope, $http, spec) => {
     $scope.specificity = spec.specificity;
+    if (sessionStorage.getItem('specificity') != null) {
+      $scope.specificity = JSON.parse(sessionStorage.getItem('specificity'))
+    }
+  
     $scope.tooltipInstance = {};
     $scope.specDict = {
       'Identifiable': 'identified',
@@ -369,7 +516,6 @@ app.controller('chartController', ($scope, $http, spec) => {
               backgroundColor: "rgba(100, 100, 100, 0.5);",
               // format: {type: 'percent', percentPrecision: 2},
               customizeText: function() {
-                console.log(this)
                 if (this.argument == 'Recommendation') {
                   return this.value > 0? this.value - 1 : 0;
                 }
