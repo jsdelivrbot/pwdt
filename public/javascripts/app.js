@@ -70,7 +70,7 @@ app.controller('mainController', ($scope, $http, spec) => {
     //'broader_linear_range': 'Broader Linear Range'
     'recommendation': 'Recommendation'
   };
-  $scope.currProtein = {text: 'test'};
+  $scope.currProtein = null;
   // Query proteins
   $scope.query = () => {
     // reset values
@@ -178,6 +178,7 @@ app.controller('mainController', ($scope, $http, spec) => {
       // }
       // else {
       $scope.updateChart(specificity);
+      //$scope.updatePie(specificity);
       //}
     })
     .error((error) => {
@@ -343,6 +344,7 @@ app.controller('mainController', ($scope, $http, spec) => {
       console.log('undefined');
       return;
     }
+    $scope.updatePie(specificity);
     var spec = '';
     var store = dataSource.store();
     // if (specificity == 'identified') {
@@ -392,6 +394,34 @@ app.controller('mainController', ($scope, $http, spec) => {
       //store.update(spec, { na : dataItem.na - (val > 0 ? (val + 1) : 0)});
     });
     dataSource.load();
+  };
+
+  $scope.updatePie = (specificity) => {
+
+    console.log('specificity: ' + specificity)
+
+    if ($scope.querySpecificity[specificity] == undefined) {
+      console.log('undefined');
+      return;
+    }
+    var spec = '';
+    var store = recData.store();
+
+
+    val = $scope.querySpecificity[specificity].Undepleted.length;
+    store.update('Undepleted', {value : val});
+    //store.update(spec, { undepleted : dataItem.undepleted - (val > 0 ? (val + 1) : 0)});
+    val = $scope.querySpecificity[specificity].Depleted.length;
+    store.update('Depleted', {value : val});
+      //store.update(spec, { depleted : dataItem.depleted - (val > 0 ? (val + 1) : 0)});
+    val = $scope.querySpecificity[specificity].Both.length;
+    store.update('Both', {value : val});
+      //store.update(spec, { both : dataItem.both - (val > 0 ? (val + 1) : 0)});
+      //val = $scope.querySpecificity[specificity].NA.length;
+      //store.update(spec, { na_query : (val > 0 ? (val + 1) : 0)});
+      //store.update(spec, { na : dataItem.na - (val > 0 ? (val + 1) : 0)});
+
+    recData.load();
   };
 //   $scope.updateChartLinearity = (specificity) => {
 //     if ($scope.querySpecificity[specificity] == undefined) {
@@ -620,5 +650,75 @@ app.controller('chartController', ($scope, $http, spec) => {
               }
             }
         }
+    };
+});
+
+var recData = new DevExpress.data.DataSource({
+  store: {
+    type: 'array',
+    key: 'method',
+    data: [{
+        method: "Undepleted",
+        value: 0
+    }, {
+        method: "Depleted",
+        value: 0
+    }, {
+        method: "Both",
+        value: 0
+    }]
+  }
+});
+
+app.controller('pieController', function DemoController($scope) {
+    $scope.chartOptions = {
+        palette: "bright",
+        dataSource: recData,
+        title: "Recommendation",
+        legend: {
+            orientation: "horizontal",
+            itemTextPosition: "right",
+            horizontalAlignment: "center",
+            verticalAlignment: "bottom",
+            columnCount: 4
+        },
+        commonSeriesSettings: {
+            ignoreEmptyPoints: true,
+        },
+        "export": {
+            enabled: true,
+            fileName: "Plasma_Workflow_Recommendation",
+            formats: ['PNG', 'PDF', 'JPEG']
+        },
+        series: [{
+            argumentField: "method",
+            valueField: "value",
+            label: {
+                visible: false,
+                font: {
+                    size: 16
+                },
+                connector: {
+                    visible: true,
+                    width: 0.5
+                },
+                position: "columns",
+                customizeText: function(arg) {
+                    return arg.valueText + " (" + arg.percentText + ")";
+                }
+            }
+        }],
+        customizeLabel: function (pointInfo) {
+            return pointInfo.value > 0 ? { visible: true } : { }
+        },
+        tooltip: {
+            enabled: true,
+            customizeTooltip: function (arg) {
+                return {
+                  text: $scope.querySpecificity[$scope.specificity.text][arg.argument].toString().replace(new RegExp(',', 'g'), "\n")
+                }
+            }
+        }
+       
     };
 });

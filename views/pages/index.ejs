@@ -141,12 +141,13 @@
     </div>
     <div class="col-lg-6">
       <br>
-      <label>{{currProtein.gene_name}}</label>
-      <label>{{currProtein.swiss_prot_id}}</label>
-      <label>{{currProtein.protein_name}}</label>
-      <span>{{currProtein.length}}</span>
-      <p ng-bind-html="currProtein.formatted"></p>
-
+      <label ng-cloak ng-show="currProtein != null">{{currProtein.entry_name + ', '}}{{currProtein.swiss_prot_id + ', '}} {{currProtein.gene_name}}</label>
+      <br>
+      <label ng-cloak ng-show="currProtein != null">{{currProtein.protein_name + ', '}}{{currProtein.length + ' amino accids'}}</label>
+      <p ng-cloak ng-bind-html="currProtein.formatted"></p>
+      <div ng-cloak class="demo-container" ng-app="pwdt" ng-controller="pieController" ng-show="querySpecificity[specificity.text].Undepleted.length > 0 || querySpecificity[specificity.text].Depleted.length > 0 || querySpecificity[specificity.text].Both.length > 0" >
+        <div id="pie" dx-pie-chart="chartOptions"></div>
+    </div>
       <div class="demo-container" ng-app="pwdt" ng-controller="chartController">
         <div id="chart" dx-chart="chartOptions"></div>
       </div>
