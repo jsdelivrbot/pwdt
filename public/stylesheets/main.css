@@ -157,6 +157,34 @@ a:active {
     background-color: transparent;
     text-decoration: underline;
 }
+.protein p{
+  font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+}
+.protein a:link {
+    color: black; 
+    background-color: #FFee00; 
+    text-decoration: none;
+}
+.protein a:hover {
+    color: black; 
+    background-color: #FFee00; 
+    text-decoration: underline;
+}
+.protein a:visited {
+    color: black; 
+    background-color: #FFee00; 
+    text-decoration: none;
+}
+.protein a:active {
+    color: black; 
+    background-color: #FFee00; 
+    text-decoration: underline;
+}
+.protein strong {
+    color: black; 
+    background-color: #00FF00; 
+    text-decoration: none;
+}
 .pagination>.disabled>a, .pagination>.disabled>a:focus, .pagination>.disabled>a:hover, .pagination>.disabled>span, .pagination>.disabled>span:focus, .pagination>.disabled>span:hover {
     cursor: not-allowed;
     background-color: #f1f1f1;
