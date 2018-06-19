@@ -193,6 +193,7 @@ app.controller('mainController', ($scope, $http, spec) => {
     //event.preventDefault();
     protein = $scope.currProtein.swiss_prot_id;
     var tooltips = {};
+    var modifications = [];
     $http.get('/api/v1/peptide/' + protein)
     //console.log('here')
     .success((data) => {
@@ -205,9 +206,20 @@ app.controller('mainController', ($scope, $http, spec) => {
         else {
           tooltips[idx] = [[peptide.peptide, peptide.modified_peptide]];
         }
+        if (peptide.modification != null) {
+          console.log(peptide.modification.split(','))
+          mod_arr = peptide.modification.split(',').map(Number)
+          for (i=0; i < mod_arr.length; i++) {
+            mod = idx + mod_arr[i];
+            if (modifications.includes(mod) == false){
+              modifications.push(mod);
+            }
+          }
+        }
       });
-
-      $scope.currProtein.formatted = addTooltips($scope.currProtein.sequence, tooltips)
+      console.log(modifications)
+      $scope.currProtein.coverage = 0;
+      $scope.currProtein.formatted = addTooltips($scope.currProtein.sequence, tooltips, modifications, $scope.currProtein.length)
 
       console.log(tooltips);
       console.log($scope.currProtein)
@@ -230,8 +242,9 @@ app.controller('mainController', ($scope, $http, spec) => {
     return seq.join(' &emsp; ');
   };
 
-  function addTooltips(str, tooltips) {
+  function addTooltips(str, tooltips, mods, length) {
 
+    var coverage = 0;
     var char_arr = str.split('');
     var tooltips_list = []
     var formatted_str = ''
@@ -244,7 +257,8 @@ app.controller('mainController', ($scope, $http, spec) => {
       }
       tooltips_list = remove(tooltips_list, i);
       if (tooltips_list.length > 0) {
-        formatted_str += format_tooltip(char_arr[i], tooltips_list)
+        formatted_str += format_tooltip(char_arr[i], tooltips_list, (mods.includes(i)))
+        coverage += 1;
       }
       else {
         formatted_str += char_arr[i]
@@ -254,9 +268,14 @@ app.controller('mainController', ($scope, $http, spec) => {
       }
     }
 
-    function format_tooltip(str, tooltip) {
+    function format_tooltip(str, tooltip, bold) {
       //<a href="#0" title="My Tooltip!" data-toggle="tooltip" data-placement="top" tooltip>
-      return '<a href="#0" title="' + tooltips_list.join('\u000A') + '" data-toggle="tooltip" data-placement="top" tooltip>' + str + '</a>';
+      if (bold) {
+        return '<a href="#0" title="' + tooltips_list.join('\u000A') + '" data-toggle="tooltip" data-placement="top" tooltip><strong>' + str + '</strong></a>';
+      }
+      else {
+        return '<a href="#0" title="' + tooltips_list.join('\u000A') + '" data-toggle="tooltip" data-placement="top" tooltip>' + str + '</a>';
+      }
       //return '<span class="tooltip" data-tooltip="' + tooltips_list.join('\u000A') + '">' + str + '</span>';
     }
 
@@ -264,7 +283,8 @@ app.controller('mainController', ($scope, $http, spec) => {
       return array.filter(e => e[1] !== element);
     }
 
-    return formatted_str;
+    $scope.currProtein.coverage = ((coverage/length)*100).toFixed(2)
+    return formatted_str
 
   }
 

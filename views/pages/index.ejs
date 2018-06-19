@@ -97,8 +97,8 @@
         </thread>
         <tbody>
           <tr dir-paginate="query in results[specificity.text]|filter:search|itemsPerPage:p">
-            <td class="ng-cloak"> <a href="/peptide"></span>{{ query.swiss_prot_id }}</td>
-            <td class="ng-cloak"> <a id="query" ng-click='peptide(query.idx)'> {{ query.gene_name }}</td>
+            <td class="ng-cloak"> <a id="query" ng-click='peptide(query.idx)'>{{ query.swiss_prot_id }}</td>
+            <td class="ng-cloak">{{ query.gene_name }}</td>
             <td class="ng-cloak">{{ query.entry_name }}</td>
             <td class="ng-cloak">{{ query.protein_name }}</td>
             <td class="ng-cloak">{{ query.specificity }}</td>
@@ -140,11 +140,12 @@
 
     </div>
     <div class="col-lg-6">
-      <br>
-      <label ng-cloak ng-show="currProtein != null">{{currProtein.entry_name + ', '}}{{currProtein.swiss_prot_id + ', '}} {{currProtein.gene_name}}</label>
-      <br>
-      <label ng-cloak ng-show="currProtein != null">{{currProtein.protein_name + ', '}}{{currProtein.length + ' amino accids'}}</label>
-      <p ng-cloak ng-bind-html="currProtein.formatted"></p>
+      <div class="protein">
+        <label ng-cloak ng-show="currProtein != null">{{currProtein.entry_name + ', '}}{{currProtein.swiss_prot_id + ', '}} {{currProtein.gene_name}}</label>
+        <br ng-cloak ng-show="currProtein != null">
+        <label ng-cloak ng-show="currProtein != null">{{currProtein.protein_name + ', '}}{{currProtein.length + ' amino accids, '}}{{'coverage: ' + currProtein.coverage}}</label>
+        <p ng-cloak ng-show="currProtein != null" ng-bind-html="currProtein.formatted"></p>
+      </div>
       <div ng-cloak class="demo-container" ng-app="pwdt" ng-controller="pieController" ng-show="querySpecificity[specificity.text].Undepleted.length > 0 || querySpecificity[specificity.text].Depleted.length > 0 || querySpecificity[specificity.text].Both.length > 0" >
         <div id="pie" dx-pie-chart="chartOptions"></div>
     </div>
