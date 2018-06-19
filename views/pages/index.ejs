@@ -143,7 +143,7 @@
       <div class="protein">
         <label ng-cloak ng-show="currProtein != null">{{currProtein.entry_name + ', '}}{{currProtein.swiss_prot_id + ', '}} {{currProtein.gene_name}}</label>
         <br ng-cloak ng-show="currProtein != null">
-        <label ng-cloak ng-show="currProtein != null">{{currProtein.protein_name + ', '}}{{currProtein.length + ' amino accids, '}}{{'coverage: ' + currProtein.coverage}}</label>
+        <label ng-cloak ng-show="currProtein != null">{{currProtein.protein_name + ', '}}{{currProtein.length + ' amino acids, '}}{{'coverage: ' + currProtein.coverage + '%'}}</label>
         <p ng-cloak ng-show="currProtein != null" ng-bind-html="currProtein.formatted"></p>
       </div>
       <div ng-cloak class="demo-container" ng-app="pwdt" ng-controller="pieController" ng-show="querySpecificity[specificity.text].Undepleted.length > 0 || querySpecificity[specificity.text].Depleted.length > 0 || querySpecificity[specificity.text].Both.length > 0" >
