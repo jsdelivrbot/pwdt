@@ -73,7 +73,7 @@ app.controller('mainController', ($scope, $http, spec) => {
   $scope.currProtein = null;
   // Query proteins
   $scope.query = () => {
-    $scope.queryForm.$setPristine();
+    $scope.specificity.text = 'identified';
     // reset values
     $scope.querySpecificity = {
       identified: {
