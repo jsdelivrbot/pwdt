@@ -27,19 +27,19 @@
           <label>Select Analytical Requirement:</label>
           <br>
           <div class="radio-inline">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" ng-model="specificity.text" ng-init="specificity.text='identified'" value="identified" ng-click="updateChart(specificity.text)" checked>
+            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" ng-model="specificity.text" ng-init="specificity.text='identified'" value="identified" ng-click="updateChart(specificity.text)" ng-checked="true">
             <span class="form-check-label">
               Identifiable
             </span>
           </div>
           <div class="radio-inline">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" ng-model="specificity.text" value="quantified" ng-click="updateChart(specificity.text)">
+            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" ng-model="specificity.text" value="quantified" ng-click="updateChart(specificity.text)" ng-checked="false">
             <span class="form-check-label">
               Quantifiable
             </span>
           </div>
           <div class="radio-inline">
-            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" ng-model="specificity.text" value="good_linearity" ng-click="updateChart(specificity.text)">
+            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" ng-model="specificity.text" value="good_linearity" ng-click="updateChart(specificity.text)" ng-checked="false">
             <span class="form-check-label">
               Linearity (r<sup>2</sup> > 0.8)
             </span>
