@@ -51,11 +51,12 @@
 }
 label {
   font-weight: 600;
-  font-size: 15px;
+  font-size: 17px;
 }
 p {
   text-align: justify;
   margin: 0 0 20px;
+  font-size: 17px;
 }
 textarea { resize:vertical; }
 .placeholder {color: #aaa;}
@@ -96,10 +97,10 @@ textarea { resize:vertical; }
 th {
     cursor:pointer;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 15px;
 }
 td {
-    font-size: 13px;
+    font-size: 15px;
 }
 #abundant th {
     font-size: 17px;
