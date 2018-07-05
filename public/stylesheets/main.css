@@ -58,6 +58,9 @@ p {
   margin: 0 0 20px;
   font-size: 17px;
 }
+span {
+  font-size: 17px;
+}
 textarea { resize:vertical; }
 .placeholder {color: #aaa;}
 .axis path, .axis line {
@@ -132,7 +135,7 @@ td {
     margin: 10px 0;
 }
 .form-group-inline label{
-  font-size: 13px;
+  font-size: 17px;
   margin: 10px 0px 18px 0px;
 }
 .form-control {
